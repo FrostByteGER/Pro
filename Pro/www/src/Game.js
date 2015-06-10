@@ -71,13 +71,14 @@ BasicGame.Game.prototype = {
     create: function () {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.sky = this.add.sprite(0,0, 'sky');
+        this.sky.scale.setTo(4,1);
         
         platforms = this.add.group();
         
         platforms.enableBody = true;
         
         var ground = platforms.create(0, this.world.height - 64, 'ground');
-        ground.scale.setTo(2,2);
+        ground.scale.setTo(5,2);
         ground.body.immovable = true;
         var ledge = platforms.create(400,300, 'ground');
         ledge.body.immovable = true;
@@ -116,8 +117,8 @@ BasicGame.Game.prototype = {
         
         for(var i = 0; i < 12; i++){
             var star = stars.create(i * 70, 0, 'star');
-            star.body.gravity.y = 6;
-            star.body.bounce.y = 0.7 + Math.random() * 0.2;
+            star.body.gravity.y = 200;
+            star.body.bounce.y = 0.3 + Math.random() * 0.2;
         }
         
         scoreText = this.add.text(16,16, 'score: 0', { fontSize: '32px', fill: '#000'});
@@ -160,7 +161,7 @@ BasicGame.Game.prototype = {
         //  Allow the player to jump if they are touching the ground.
         if (cursors.up.isDown && player.body.touching.down)
         {
-            player.body.velocity.y = -350;
+            player.body.velocity.y = -275;
         }
     },
 
