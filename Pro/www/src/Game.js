@@ -120,11 +120,14 @@ ProShooter.Game.prototype = {
  
     {
  
-        this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
+        this.game.debug.text(this.game.time.fps+" "+this.health || '--', 20, 70, "#00ff00", "40px Courier");  
  
     },
  
 	fireBullet: function() {
+		
+		
+		
   	    var bullet = this.bullets.getFirstExists(false);
   	  	
   	    if (bullet && this.shootcooldown == 0)
@@ -134,11 +137,13 @@ ProShooter.Game.prototype = {
   	    	if(this.direction == -1){
   	  	    	//  And fire it
   	  	        bullet.reset(this.player.x+10, this.player.y+27);
+  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-100, 100);
   	  	        bullet.body.velocity.x = -400;
   	    	}else if(this.direction == 1){
   	    		//right
   	  	    	//  And fire it
   	  	        bullet.reset(this.player.x+42, this.player.y+27);
+  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-100, 100);
   	  	        bullet.body.velocity.x = +400;
   	    	}
   	    }
