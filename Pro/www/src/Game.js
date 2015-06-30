@@ -40,6 +40,7 @@ ProShooter.Game.prototype = {
       
       this.direction = 1;
       this.health = 100;
+
       
       //shoot
       
@@ -54,6 +55,9 @@ ProShooter.Game.prototype = {
       
       this.shootspeed = 35;
       this.shootcooldown = 0;
+      this.bulletspeed = 500;
+      this.bulletspred = 50;
+      this.bulletpershoot = 5;
       
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -107,7 +111,7 @@ ProShooter.Game.prototype = {
   	    //  Grab the first bullet we can from the pool
     	  
     	  if(this.shootcooldown == 0){
-        	  for (var i = 0; i < 5; i++) {
+        	  for (var i = 0; i < this.bulletpershoot; i++) {
         		  this.fireBullet();
         	  }
         	  this.shootcooldown = this.shootspeed;
@@ -137,14 +141,14 @@ ProShooter.Game.prototype = {
 	  	    	if(this.direction == -1){
 	  	  	    	//  And fire it
 	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-50, 50);
-	  	  	        bullet.body.velocity.x = -400;
+	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
+	  	  	        bullet.body.velocity.x = -this.bulletspeed ;
 	  	    	}else if(this.direction == 1){
 	  	    		//right
 	  	  	    	//  And fire it
 	  	  	        bullet.reset(this.player.x+42, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-50, 50);
-	  	  	        bullet.body.velocity.x = +400;
+	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
+	  	  	        bullet.body.velocity.x = +this.bulletspeed ;
 	  	    	}
 	  	    }
 	},
