@@ -52,7 +52,7 @@ ProShooter.Game.prototype = {
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-      this.shootspeed = 5;
+      this.shootspeed = 35;
       this.shootcooldown = 0;
       
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -62,6 +62,7 @@ ProShooter.Game.prototype = {
 
   update: function() {
  
+	  this.physics.arcade.overlap(this.platforms, this.bullets, this.collectBullet , null, this);
 	  
 	  this.physics.arcade.collide(this.player, this.platforms);
 	  
@@ -104,16 +105,19 @@ ProShooter.Game.prototype = {
       
       if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
   	    //  Grab the first bullet we can from the pool
-
     	  
-    	  this.fireBullet();
+    	  if(this.shootcooldown == 0){
+        	  for (var i = 0; i < 5; i++) {
+        		  this.fireBullet();
+        	  }
+        	  this.shootcooldown = this.shootspeed;
+    	  }
+    	  
       }
 
       if(this.shootcooldown > 0){
     	  this.shootcooldown--;
       }
-      
-
   },
  
   render: function()
@@ -125,29 +129,29 @@ ProShooter.Game.prototype = {
     },
  
 	fireBullet: function() {
-		
-		
-		
-  	    var bullet = this.bullets.getFirstExists(false);
-  	  	
-  	    if (bullet && this.shootcooldown == 0)
-  	    {	
-  	    	this.shootcooldown = this.shootspeed;
-  	    	//left
-  	    	if(this.direction == -1){
-  	  	    	//  And fire it
-  	  	        bullet.reset(this.player.x+10, this.player.y+27);
-  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-100, 100);
-  	  	        bullet.body.velocity.x = -400;
-  	    	}else if(this.direction == 1){
-  	    		//right
-  	  	    	//  And fire it
-  	  	        bullet.reset(this.player.x+42, this.player.y+27);
-  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-100, 100);
-  	  	        bullet.body.velocity.x = +400;
-  	    	}
-  	    }
-	}
+	  	    var bullet = this.bullets.getFirstExists(false);
+	  	  	
+	  	    if (bullet && this.shootcooldown == 0)
+	  	    {	
+	  	    	//left
+	  	    	if(this.direction == -1){
+	  	  	    	//  And fire it
+	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
+	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-50, 50);
+	  	  	        bullet.body.velocity.x = -400;
+	  	    	}else if(this.direction == 1){
+	  	    		//right
+	  	  	    	//  And fire it
+	  	  	        bullet.reset(this.player.x+42, this.player.y+27);
+	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-50, 50);
+	  	  	        bullet.body.velocity.x = +400;
+	  	    	}
+	  	    }
+	},
+	
+	collectBullet: function (platform, bullet){
+		bullet.kill();
+    }
   
   
   
