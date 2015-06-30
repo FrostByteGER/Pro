@@ -1,3 +1,122 @@
+
+
+var ProShooter = ProShooter || {};
+ 
+ProShooter.Game = function(){};
+ 
+ProShooter.Game.prototype = {
+ 
+  preload: function() {
+ 
+      this.game.time.advancedTiming = true;
+ 
+    },
+ 
+  create: function() {
+ 
+    //create player
+	  this.game.stage.backgroundColor = '#fff';
+    //this.player = this.game.add.sprite(100, 300, 'player');
+      this.sky = this.add.sprite(0,0, 'sky');
+      this.sky.scale.setTo(4,1);
+      
+      this.player = this.add.sprite(32, this.world.height - 150, 'dude');
+      this.game.physics.arcade.enable(this.player);
+      this.player.body.gravity.y = 1000;
+      this.player.body.bounce.y = 0.2;
+      this.player.animations.add('left', [0, 1, 2, 3], 10, true);
+      this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+      // Change to constant camera speed
+      this.game.camera.follow(this.player);
+      
+      
+      // Ground
+      this.platforms = this.add.group();
+      this.platforms.enableBody = true;
+      var ground = platforms.create(0, this.world.height - 64, 'ground');
+      ground.scale.setTo(5,2);
+      ground.body.immovable = true;
+      
+      this.cursors = this.input.keyboard.createCursorKeys();
+ }, 
+
+  update: function() {
+ 
+	  
+	  this.physics.arcade.collide(this.player, this.platforms);
+	  
+      //  Reset the players velocity (movement)
+      this.player.body.velocity.x = 0;
+
+      if (this.cursors.left.isDown)
+      {
+          //  Move to the left
+          this.player.body.velocity.x = -150;
+
+          thisplayer.animations.play('left');
+      }
+      else if (this.cursors.right.isDown)
+      {
+          //  Move to the right
+          this.player.body.velocity.x = 150;
+
+          this.player.animations.play('right');
+      }
+      else
+      {
+          //  Stand still
+          this.player.animations.stop();
+
+          this.player.frame = 4;
+      }
+  },
+ 
+  render: function()
+ 
+    {
+ 
+        this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
+ 
+    }
+ 
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
 // create BasicGame Class
 BasicGame = {
 
@@ -184,4 +303,4 @@ BasicGame.Game.prototype = {
     }
 
 
-};
+};*/
