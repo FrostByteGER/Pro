@@ -7,7 +7,6 @@ ProShooter.Game = function(){};
 ProShooter.Game.prototype = {
  
   preload: function() {
- 
       this.game.time.advancedTiming = true;
  
     },
@@ -16,7 +15,7 @@ ProShooter.Game.prototype = {
  
     //create player
 	  this.game.stage.backgroundColor = '#fff';
-    //this.player = this.game.add.sprite(100, 300, 'player');
+      this.player = this.game.add.sprite(100, 300, 'player');
       this.sky = this.add.sprite(0,0, 'sky');
       this.sky.scale.setTo(4,1);
       
@@ -33,7 +32,7 @@ ProShooter.Game.prototype = {
       // Ground
       this.platforms = this.add.group();
       this.platforms.enableBody = true;
-      var ground = platforms.create(0, this.world.height - 64, 'ground');
+      var ground = this.platforms.create(0, this.world.height - 64, 'ground');
       ground.scale.setTo(5,2);
       ground.body.immovable = true;
       
@@ -53,7 +52,7 @@ ProShooter.Game.prototype = {
           //  Move to the left
           this.player.body.velocity.x = -150;
 
-          thisplayer.animations.play('left');
+          this.player.animations.play('left');
       }
       else if (this.cursors.right.isDown)
       {
