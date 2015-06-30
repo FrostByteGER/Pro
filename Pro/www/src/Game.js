@@ -53,15 +53,13 @@ ProShooter.Game.prototype = {
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-      this.shootspeed = 35;
+      this.shootspeed = 20;
       this.shootcooldown = 0;
       this.bulletspeed = 500;
       this.bulletspred = 50;
-      this.bulletpershoot = 5;
+      this.bulletpershoot = 3;
       
-      this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-      
+      this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);  
  }, 
 
   update: function() {
