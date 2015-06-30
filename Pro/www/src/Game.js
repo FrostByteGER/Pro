@@ -120,7 +120,7 @@ ProShooter.Game.prototype = {
  
     {
  
-        this.game.debug.text(this.game.time.fps+" "+this.health || '--', 20, 70, "#00ff00", "40px Courier");  
+        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");  
  
     },
  
