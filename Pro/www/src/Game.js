@@ -39,6 +39,21 @@ ProShooter.Game.prototype = {
       this.cursors = this.input.keyboard.createCursorKeys();
       
       this.direction = -1;
+      
+      //shoot
+      
+      this.bullets = this.game.add.group();
+      this.bullets.enableBody = true;
+      this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+      this.bullets.createMultiple(30, 'bullet');
+      this.bullets.setAll('anchor.x', 0.5);
+      this.bullets.setAll('anchor.y', 1);
+      this.bullets.setAll('outOfBoundsKill', true);
+      this.bullets.setAll('checkWorldBounds', true);
+      
+      this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+      
  }, 
 
   update: function() {
@@ -83,7 +98,12 @@ ProShooter.Game.prototype = {
           
       }
       
+      if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
+  	    //  Grab the first bullet we can from the pool
 
+    	  
+    	  this.fireBullet();
+      }
 
       
 
@@ -95,9 +115,24 @@ ProShooter.Game.prototype = {
  
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
  
-    }
+    },
  
+	fireBullet: function() {
+  	    var bullet = this.bullets.getFirstExists(false);
+  	  	
+  	    if (bullet)
+  	    {
+  	        //  And fire it
+  	        bullet.reset(this.player.x, this.player.y + 8);
+  	        bullet.body.velocity.x = +400;
+  	    }
+	}
+  
+  
+  
 };
+
+
 
 
 
