@@ -38,7 +38,7 @@ ProShooter.Game.prototype = {
       
       this.cursors = this.input.keyboard.createCursorKeys();
       
-      this.direction = -1;
+      this.direction = 1;
  }, 
 
   update: function() {
