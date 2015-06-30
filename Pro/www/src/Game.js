@@ -13,8 +13,7 @@ ProShooter.Game.prototype = {
  
   create: function() {
  
-    //create player
-	  this.game.stage.backgroundColor = '#fff';
+      //create player
       this.player = this.game.add.sprite(100, 300, 'player');
       this.sky = this.add.sprite(0,0, 'sky');
       this.sky.scale.setTo(4,1);
@@ -23,8 +22,9 @@ ProShooter.Game.prototype = {
       this.game.physics.arcade.enable(this.player);
       this.player.body.gravity.y = 1000;
       this.player.body.bounce.y = 0.2;
-      this.player.animations.add('left', [0, 1, 2, 3], 10, true);
-      this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+      this.player.animations.add('left', [16, 17, 18, 19, 20 , 21, 22, 23], 10, true);
+      this.player.animations.add('right', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
+      this.player.animations.add('jump', [4, 6], 10, true);
       // Change to constant camera speed
       this.game.camera.follow(this.player);
       
@@ -37,6 +37,8 @@ ProShooter.Game.prototype = {
       ground.body.immovable = true;
       
       this.cursors = this.input.keyboard.createCursorKeys();
+      
+      this.direction = -1;
  }, 
 
   update: function() {
@@ -53,6 +55,8 @@ ProShooter.Game.prototype = {
           this.player.body.velocity.x = -150;
 
           this.player.animations.play('left');
+          this.direction = -1;
+          
       }
       else if (this.cursors.right.isDown)
       {
@@ -60,14 +64,29 @@ ProShooter.Game.prototype = {
           this.player.body.velocity.x = 150;
 
           this.player.animations.play('right');
+          this.direction = 1;
       }
-      else
+      else if(this.player.body.velocity.x == 0 || this.player.body.velocity.y == 0 && this.player.body.touching.down)
       {
           //  Stand still
           this.player.animations.stop();
-
-          this.player.frame = 4;
+          if(this.direction == -1){
+        	  this.player.frame = 1;
+          }else if(this.direction == 1){
+        	  this.player.frame = 0;
+          }
       }
+      
+      if (this.cursors.up.isDown && this.player.body.touching.down)
+      {
+          this.player.body.velocity.y = -275;
+          
+      }
+      
+
+
+      
+
   },
  
   render: function()

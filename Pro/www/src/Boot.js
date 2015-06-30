@@ -18,7 +18,7 @@ ProShooter.Boot.prototype = {
 		 
 		    //loading screen will have a white background
 		 
-			 
+		    this.game.stage.backgroundColor = '#fff';
 		 
 		    //scaling options
 		 

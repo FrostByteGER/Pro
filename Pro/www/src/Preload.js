@@ -26,7 +26,7 @@ ProShooter.Preload.prototype = {
     this.load.image('sky','asset/sky.png');
     this.load.image('ground','asset/platform.png');
     this.load.image('star','asset/star.png');
-    this.load.spritesheet('dude','asset/dude.png', 32, 48);
+    this.load.spritesheet('dude','asset/Player.png', 50, 50);
     
  
   },
