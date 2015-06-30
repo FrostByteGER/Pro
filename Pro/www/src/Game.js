@@ -39,6 +39,7 @@ ProShooter.Game.prototype = {
       this.cursors = this.input.keyboard.createCursorKeys();
       
       this.direction = 1;
+      this.health = 100;
       
       //shoot
       
@@ -50,6 +51,9 @@ ProShooter.Game.prototype = {
       this.bullets.setAll('anchor.y', 1);
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
+      
+      this.shootspeed = 5;
+      this.shootcooldown = 0;
       
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -105,6 +109,9 @@ ProShooter.Game.prototype = {
     	  this.fireBullet();
       }
 
+      if(this.shootcooldown > 0){
+    	  this.shootcooldown--;
+      }
       
 
   },
@@ -120,11 +127,20 @@ ProShooter.Game.prototype = {
 	fireBullet: function() {
   	    var bullet = this.bullets.getFirstExists(false);
   	  	
-  	    if (bullet)
-  	    {
-  	        //  And fire it
-  	        bullet.reset(this.player.x, this.player.y + 8);
-  	        bullet.body.velocity.x = +400;
+  	    if (bullet && this.shootcooldown == 0)
+  	    {	
+  	    	this.shootcooldown = this.shootspeed;
+  	    	//left
+  	    	if(this.direction == -1){
+  	  	    	//  And fire it
+  	  	        bullet.reset(this.player.x+10, this.player.y+27);
+  	  	        bullet.body.velocity.x = -400;
+  	    	}else if(this.direction == 1){
+  	    		//right
+  	  	    	//  And fire it
+  	  	        bullet.reset(this.player.x+42, this.player.y+27);
+  	  	        bullet.body.velocity.x = +400;
+  	    	}
   	    }
 	}
   
