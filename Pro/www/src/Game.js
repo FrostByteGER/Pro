@@ -157,6 +157,7 @@ ProShooter.Game.prototype = {
         
     },
  
+    
 	fireBullet: function() {
 	  	    var bullet = this.bullets.getFirstExists(false);
 	  	  	
