@@ -21,7 +21,6 @@ ProShooter.Game.prototype = {
       this.player = this.game.add.sprite(100, 300, 'player');
       
       this.player = this.add.sprite(32, this.world.height - 150, 'dude');
-      this.player.anchor.setTo(0.5,0.5);
       this.game.physics.arcade.enable(this.player);
       
       // Player Movementspeed
@@ -124,15 +123,13 @@ ProShooter.Game.prototype = {
       if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
   	    //  Grab the first bullet we can from the pool
     	  
-    	  if(this.game.input.mousePointer.x < this.playermidx){
+    	  if(this.game.input.mousePointer.x+ this.game.camera.x < this.playermidx){
     		  if(this.direction == 1){
     			  this.direction = -1;
-    			  this.player.scale.x *= -1;
     		  }
     	  }else{
     		  if(this.direction == -1){
         		  this.direction = 1;
-        		  this.player.scale.x *= -1;
     		  }
     	  }
     	  
@@ -155,8 +152,8 @@ ProShooter.Game.prototype = {
  
     {
  
-        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
-        //this.game.debug.text("Fisch: "+this.bulletangle|| '--', 20, 70, "#00ff00", "40px Courier");
+        //this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
+        this.game.debug.text("P: "+this.player.x+" M:"+this.mousx+" d:"+this.direction|| '--', 20, 70, "#00ff00", "40px Courier");
         
     },
  
@@ -166,7 +163,7 @@ ProShooter.Game.prototype = {
 	  	    this.playermidx = this.player.x+25;
 	  	    this.playermidy = this.player.y+25;
 	  	    
-	  	    this.mousx = this.game.input.mousePointer.x;
+	  	    this.mousx = this.game.input.mousePointer.x + this.game.camera.x;
 	  	    this.mousy = this.game.input.mousePointer.y;
 	  	    
 	  	    this.bulletangle = Math.atan((this.mousy-this.playermidy)/(this.mousx-this.playermidx))+(this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred)/100);   
@@ -176,8 +173,8 @@ ProShooter.Game.prototype = {
 	  	    	//left
 	  	    	if(this.direction == -1){
 	  	  	    	//  And fire it
-	  	  	        //bullet.reset(this.player.x+10, this.player.y+27);
-	  	    		bullet.reset(this.player.x, this.player.y);
+	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
+	  	    		//bullet.reset(this.player.x, this.player.y);
 	  	  	        
 	  	  	        this.game.physics.arcade.velocityFromRotation(this.bulletangle,-this.bulletspeed,bullet.body.velocity);
 	  	  	        
@@ -185,8 +182,8 @@ ProShooter.Game.prototype = {
 	  	    	}else if(this.direction == 1){
 	  	    		//right
 	  	  	    	//  And fire it
-	  	    		//bullet.reset(this.player.x+42, this.player.y+27);
-	  	    		bullet.reset(this.player.x, this.player.y);
+	  	    		bullet.reset(this.player.x+42, this.player.y+27);
+	  	    		//bullet.reset(this.player.x, this.player.y);
 	  	    		this.game.physics.arcade.velocityFromRotation(this.bulletangle,this.bulletspeed,bullet.body.velocity);
 	  	    		bullet.rotation = this.bulletangle;
 	  	    	}
