@@ -56,8 +56,10 @@ ProShooter.Game.prototype = {
       this.shootspeed = 20;
       this.shootcooldown = 0;
       this.bulletspeed = 500;
-      this.bulletspred = 50;
+      this.bulletspred = 20;
       this.bulletpershoot = 3;
+      
+      this.bulletxp = 0;
       
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);  
  }, 
@@ -108,6 +110,13 @@ ProShooter.Game.prototype = {
       if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
   	    //  Grab the first bullet we can from the pool
     	  
+    	  if(this.game.input.mousePointer.x < this.playermidx){
+    		  this.direction = -1;
+    	  }else{
+    		  this.direction = 1;
+    	  }
+    	  
+    	  
     	  if(this.shootcooldown == 0){
         	  for (var i = 0; i < this.bulletpershoot; i++) {
         		  this.fireBullet();
@@ -126,29 +135,45 @@ ProShooter.Game.prototype = {
  
     {
  
-        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");  
- 
+        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
+        //this.game.debug.text("Fisch: "+this.bulletangle|| '--', 20, 70, "#00ff00", "40px Courier");
+        
     },
  
 	fireBullet: function() {
 	  	    var bullet = this.bullets.getFirstExists(false);
 	  	  	
+	  	    this.playermidx = this.player.x+25;
+	  	    this.playermidy = this.player.y+25;
+	  	    
+	  	    this.mousx = this.game.input.mousePointer.x;
+	  	    this.mousy = this.game.input.mousePointer.y;
+	  	    
+	  	    this.bulletangle = Math.atan((this.mousy-this.playermidy)/(this.mousx-this.playermidx))+(this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred)/100);   
+	  	    
 	  	    if (bullet && this.shootcooldown == 0)
 	  	    {	
 	  	    	//left
 	  	    	if(this.direction == -1){
 	  	  	    	//  And fire it
 	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
-	  	  	        bullet.body.velocity.x = -this.bulletspeed ;
+	  	  	        
+	  	  	        this.game.physics.arcade.velocityFromRotation(this.bulletangle,-this.bulletspeed,bullet.body.velocity);
+	  	  	        
+	  	  	        bullet.rotation = this.bulletangle+Math.PI;
 	  	    	}else if(this.direction == 1){
 	  	    		//right
 	  	  	    	//  And fire it
-	  	  	        bullet.reset(this.player.x+42, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
-	  	  	        bullet.body.velocity.x = +this.bulletspeed ;
+	  	    		bullet.reset(this.player.x+42, this.player.y+27);
+	  	    		this.game.physics.arcade.velocityFromRotation(this.bulletangle,this.bulletspeed,bullet.body.velocity);
+	  	    		bullet.rotation = this.bulletangle;
 	  	    	}
 	  	    }
+	  	    
+	  	    //  Make bullet come out of tip of ship with right angle
+	  	    
+
+	  	    
 	},
 	
 	collectBullet: function (platform, bullet){
