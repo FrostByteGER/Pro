@@ -13,52 +13,74 @@ ProShooter.Game.prototype = {
  
   create: function() {
  
+	  
+	  this.game.world.setBounds(0,0, 2000, 480);
+	  
+      //Map
+      this.map = this.game.add.sprite(0,0,'levelsegment1');
+      this.map.scale.setTo(1.5,1.5);
+      
+      
+	  
       //create player
       this.player = this.game.add.sprite(100, 300, 'player');
-      this.sky = this.add.sprite(0,0, 'sky');
-      this.sky.scale.setTo(4,1);
       
       this.player = this.add.sprite(32, this.world.height - 150, 'dude');
       this.game.physics.arcade.enable(this.player);
       this.player.body.gravity.y = 1000;
       this.player.body.bounce.y = 0.2;
+      
+      // Player Movementspeed
+	  this.player.speedx = 300;
+	  this.player.speedy = -475;
+	  
+	  
       this.player.animations.add('left', [16, 17, 18, 19, 20 , 21, 22, 23], 10, true);
       this.player.animations.add('right', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
       this.player.animations.add('jump', [4, 6], 10, true);
+      
       // Change to constant camera speed
       this.game.camera.follow(this.player);
-      
       
       // Ground
       this.platforms = this.add.group();
       this.platforms.enableBody = true;
-      var ground = this.platforms.create(0, this.world.height - 64, 'ground');
+      var ground = this.platforms.create(0, this.world.height - 12, 'ground');
       ground.scale.setTo(5,2);
       ground.body.immovable = true;
       
       this.cursors = this.input.keyboard.createCursorKeys();
+      this.wasd = {
+              up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+              down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+              left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+              right: this.game.input.keyboard.addKey(Phaser.Keyboard.D),
+      };
       
       this.direction = 1;
       this.health = 100;
 
       
-      //shoot
+      //Weapon-Settings
+      this.maxbullets = 500;
+      this.shootspeed = 2;
+      this.shootcooldown = 0;
+      this.bulletspeed = 500;
+      this.bulletspred = 15;
+      this.bulletpershoot = 1;
+      
+      
       
       this.bullets = this.game.add.group();
       this.bullets.enableBody = true;
       this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-      this.bullets.createMultiple(30, 'bullet');
+      this.bullets.createMultiple(this.maxbullets, 'bullet');
       this.bullets.setAll('anchor.x', 0.5);
       this.bullets.setAll('anchor.y', 1);
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-      this.shootspeed = 20;
-      this.shootcooldown = 0;
-      this.bulletspeed = 500;
-      this.bulletspred = 50;
-      this.bulletpershoot = 3;
-      
+
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);  
  }, 
 
@@ -71,20 +93,19 @@ ProShooter.Game.prototype = {
       //  Reset the players velocity (movement)
       this.player.body.velocity.x = 0;
 
-      if (this.cursors.left.isDown)
+      if (this.cursors.left.isDown || this.wasd.left.isDown)
       {
           //  Move to the left
-          this.player.body.velocity.x = -150;
+          this.player.body.velocity.x = -this.player.speedx;
 
           this.player.animations.play('left');
           this.direction = -1;
           
       }
-      else if (this.cursors.right.isDown)
+      else if (this.cursors.right.isDown || this.wasd.right.isDown)
       {
           //  Move to the right
-          this.player.body.velocity.x = 150;
-
+          this.player.body.velocity.x = this.player.speedx;
           this.player.animations.play('right');
           this.direction = 1;
       }
@@ -99,9 +120,9 @@ ProShooter.Game.prototype = {
           }
       }
       
-      if (this.cursors.up.isDown && this.player.body.touching.down)
+      if ((this.cursors.up.isDown || this.wasd.up.isDown)&& this.player.body.touching.down)
       {
-          this.player.body.velocity.y = -275;
+          this.player.body.velocity.y = this.player.speedy;
           
       }
       
@@ -125,7 +146,7 @@ ProShooter.Game.prototype = {
   render: function()
  
     {
- 
+	    this.game.debug.cameraInfo(this.game.camera, 550, 32);
         this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");  
  
     },
