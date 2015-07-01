@@ -114,13 +114,11 @@ ProShooter.Game.prototype = {
     	  if(this.game.input.mousePointer.x < this.playermidx){
     		  if(this.direction == 1){
     			  this.direction = -1;
-    			  this.player.anchor.setTo(0.5,0.5);
     			  this.player.scale.x *= -1;
     		  }
     	  }else{
     		  if(this.direction == -1){
         		  this.direction = 1;
-        		  this.player.anchor.setTo(0.5,0.5);
         		  this.player.scale.x *= -1;
     		  }
     		  
