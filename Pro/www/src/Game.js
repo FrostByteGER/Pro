@@ -30,6 +30,7 @@ ProShooter.Game.prototype = {
       
       this.player.body.gravity.y = 1000;
       this.player.body.bounce.y = 0.2;
+      this.player.body.collideWorldBounds = true;
       this.player.animations.add('left', [16, 17, 18, 19, 20 , 21, 22, 23], 10, true);
       this.player.animations.add('right', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
       this.player.animations.add('jump', [4, 6], 10, true);
@@ -40,7 +41,7 @@ ProShooter.Game.prototype = {
       // Ground
       this.platforms = this.add.group();
       this.platforms.enableBody = true;
-      var ground = this.platforms.create(0, this.world.height - 64, 'ground');
+      var ground = this.platforms.create(0, this.world.height - 10, 'ground');
       ground.scale.setTo(5,2);
       ground.body.immovable = true;
       
@@ -161,6 +162,8 @@ ProShooter.Game.prototype = {
     {
 	    this.game.debug.cameraInfo(this.game.camera, 550, 32);
         this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
+        this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x + "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20, 140, "#00ff00", "20px Courier");
+        this.game.debug.text("Player X: " + this.player.x+25 + "   Player Y: " + this.player.y+25|| '--', 20, 200, "#00ff00", "20px Courier");
         //this.game.debug.text("Fisch: "+this.bulletangle|| '--', 20, 70, "#00ff00", "40px Courier");
         
     },
