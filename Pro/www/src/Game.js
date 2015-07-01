@@ -54,10 +54,10 @@ ProShooter.Game.prototype = {
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-      this.shootspeed = 0;
+      this.shootspeed = 5;
       this.shootcooldown = 0;
       this.bulletspeed = 500;
-      this.bulletspred = 20;
+      this.bulletspred = 2;
       this.bulletpershoot = 1;
       
       this.bulletxp = 0;
@@ -121,9 +121,6 @@ ProShooter.Game.prototype = {
         		  this.direction = 1;
         		  this.player.scale.x *= -1;
     		  }
-    		  
-    		  
-
     	  }
     	  
     	  
