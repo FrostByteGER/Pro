@@ -1,7 +1,5 @@
-
-
 var ProShooter = ProShooter || {};
- 
+
 ProShooter.Game = function(){};
  
 ProShooter.Game.prototype = {
@@ -13,39 +11,36 @@ ProShooter.Game.prototype = {
  
   create: function() {
  
-	  
 	  this.game.world.setBounds(0,0, 2000, 480);
 	  
       //Map
       this.map = this.game.add.sprite(0,0,'levelsegment1');
       this.map.scale.setTo(1.5,1.5);
-      
-      
 	  
       //create player
       this.player = this.game.add.sprite(100, 300, 'player');
       
       this.player = this.add.sprite(32, this.world.height - 150, 'dude');
+      this.player.anchor.setTo(0.5,0.5);
       this.game.physics.arcade.enable(this.player);
-      this.player.body.gravity.y = 1000;
-      this.player.body.bounce.y = 0.2;
       
       // Player Movementspeed
 	  this.player.speedx = 300;
 	  this.player.speedy = -475;
-	  
-	  
+      
+      this.player.body.gravity.y = 1000;
+      this.player.body.bounce.y = 0.2;
       this.player.animations.add('left', [16, 17, 18, 19, 20 , 21, 22, 23], 10, true);
       this.player.animations.add('right', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
       this.player.animations.add('jump', [4, 6], 10, true);
-      
       // Change to constant camera speed
       this.game.camera.follow(this.player);
+      
       
       // Ground
       this.platforms = this.add.group();
       this.platforms.enableBody = true;
-      var ground = this.platforms.create(0, this.world.height - 12, 'ground');
+      var ground = this.platforms.create(0, this.world.height - 64, 'ground');
       ground.scale.setTo(5,2);
       ground.body.immovable = true;
       
@@ -61,26 +56,25 @@ ProShooter.Game.prototype = {
       this.health = 100;
 
       
-      //Weapon-Settings
-      this.maxbullets = 500;
-      this.shootspeed = 2;
-      this.shootcooldown = 0;
-      this.bulletspeed = 500;
-      this.bulletspred = 15;
-      this.bulletpershoot = 1;
-      
-      
+      //shoot
       
       this.bullets = this.game.add.group();
       this.bullets.enableBody = true;
       this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-      this.bullets.createMultiple(this.maxbullets, 'bullet');
+      this.bullets.createMultiple(30, 'bullet');
       this.bullets.setAll('anchor.x', 0.5);
       this.bullets.setAll('anchor.y', 1);
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-
+      this.shootspeed = 0;
+      this.shootcooldown = 0;
+      this.bulletspeed = 500;
+      this.bulletspred = 20;
+      this.bulletpershoot = 1;
+      
+      this.bulletxp = 0;
+      
       this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);  
  }, 
 
@@ -102,10 +96,11 @@ ProShooter.Game.prototype = {
           this.direction = -1;
           
       }
-      else if (this.cursors.right.isDown || this.wasd.right.isDown)
+      else if (this.cursors.right.isDown|| this.wasd.right.isDown)
       {
           //  Move to the right
           this.player.body.velocity.x = this.player.speedx;
+
           this.player.animations.play('right');
           this.direction = 1;
       }
@@ -120,7 +115,7 @@ ProShooter.Game.prototype = {
           }
       }
       
-      if ((this.cursors.up.isDown || this.wasd.up.isDown)&& this.player.body.touching.down)
+      if ((this.cursors.up.isDown || this.wasd.up.isDown) && this.player.body.touching.down)
       {
           this.player.body.velocity.y = this.player.speedy;
           
@@ -128,6 +123,24 @@ ProShooter.Game.prototype = {
       
       if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
   	    //  Grab the first bullet we can from the pool
+    	  
+    	  if(this.game.input.mousePointer.x < this.playermidx){
+    		  if(this.direction == 1){
+    			  this.direction = -1;
+    			  this.player.anchor.setTo(0.5,0.5);
+    			  this.player.scale.x *= -1;
+    		  }
+    	  }else{
+    		  if(this.direction == -1){
+        		  this.direction = 1;
+        		  this.player.anchor.setTo(0.5,0.5);
+        		  this.player.scale.x *= -1;
+    		  }
+    		  
+    		  
+
+    	  }
+    	  
     	  
     	  if(this.shootcooldown == 0){
         	  for (var i = 0; i < this.bulletpershoot; i++) {
@@ -146,30 +159,48 @@ ProShooter.Game.prototype = {
   render: function()
  
     {
-	    this.game.debug.cameraInfo(this.game.camera, 550, 32);
-        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");  
  
+        this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
+        //this.game.debug.text("Fisch: "+this.bulletangle|| '--', 20, 70, "#00ff00", "40px Courier");
+        
     },
  
 	fireBullet: function() {
 	  	    var bullet = this.bullets.getFirstExists(false);
 	  	  	
+	  	    this.playermidx = this.player.x+25;
+	  	    this.playermidy = this.player.y+25;
+	  	    
+	  	    this.mousx = this.game.input.mousePointer.x;
+	  	    this.mousy = this.game.input.mousePointer.y;
+	  	    
+	  	    this.bulletangle = Math.atan((this.mousy-this.playermidy)/(this.mousx-this.playermidx))+(this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred)/100);   
+	  	    
 	  	    if (bullet && this.shootcooldown == 0)
 	  	    {	
 	  	    	//left
 	  	    	if(this.direction == -1){
 	  	  	    	//  And fire it
-	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
-	  	  	        bullet.body.velocity.x = -this.bulletspeed ;
+	  	  	        //bullet.reset(this.player.x+10, this.player.y+27);
+	  	    		bullet.reset(this.player.x, this.player.y);
+	  	  	        
+	  	  	        this.game.physics.arcade.velocityFromRotation(this.bulletangle,-this.bulletspeed,bullet.body.velocity);
+	  	  	        
+	  	  	        bullet.rotation = this.bulletangle+Math.PI;
 	  	    	}else if(this.direction == 1){
 	  	    		//right
 	  	  	    	//  And fire it
-	  	  	        bullet.reset(this.player.x+42, this.player.y+27);
-	  	  	        bullet.body.velocity.y = this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred);
-	  	  	        bullet.body.velocity.x = +this.bulletspeed ;
+	  	    		//bullet.reset(this.player.x+42, this.player.y+27);
+	  	    		bullet.reset(this.player.x, this.player.y);
+	  	    		this.game.physics.arcade.velocityFromRotation(this.bulletangle,this.bulletspeed,bullet.body.velocity);
+	  	    		bullet.rotation = this.bulletangle;
 	  	    	}
 	  	    }
+	  	    
+	  	    //  Make bullet come out of tip of ship with right angle
+	  	    
+
+	  	    
 	},
 	
 	collectBullet: function (platform, bullet){
@@ -179,11 +210,6 @@ ProShooter.Game.prototype = {
   
   
 };
-
-
-
-
-
 
 
 
