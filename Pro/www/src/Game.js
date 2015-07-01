@@ -19,6 +19,7 @@ ProShooter.Game.prototype = {
       this.sky.scale.setTo(4,1);
       
       this.player = this.add.sprite(32, this.world.height - 150, 'dude');
+      this.player.anchor.setTo(0.5,0.5);
       this.game.physics.arcade.enable(this.player);
       this.player.body.gravity.y = 1000;
       this.player.body.bounce.y = 0.2;
@@ -53,11 +54,11 @@ ProShooter.Game.prototype = {
       this.bullets.setAll('outOfBoundsKill', true);
       this.bullets.setAll('checkWorldBounds', true);
       
-      this.shootspeed = 20;
+      this.shootspeed = 0;
       this.shootcooldown = 0;
       this.bulletspeed = 500;
       this.bulletspred = 20;
-      this.bulletpershoot = 3;
+      this.bulletpershoot = 1;
       
       this.bulletxp = 0;
       
@@ -111,9 +112,20 @@ ProShooter.Game.prototype = {
   	    //  Grab the first bullet we can from the pool
     	  
     	  if(this.game.input.mousePointer.x < this.playermidx){
-    		  this.direction = -1;
+    		  if(this.direction == 1){
+    			  this.direction = -1;
+    			  this.player.anchor.setTo(0.5,0.5);
+    			  this.player.scale.x *= -1;
+    		  }
     	  }else{
-    		  this.direction = 1;
+    		  if(this.direction == -1){
+        		  this.direction = 1;
+        		  this.player.anchor.setTo(0.5,0.5);
+        		  this.player.scale.x *= -1;
+    		  }
+    		  
+    		  
+
     	  }
     	  
     	  
@@ -156,7 +168,8 @@ ProShooter.Game.prototype = {
 	  	    	//left
 	  	    	if(this.direction == -1){
 	  	  	    	//  And fire it
-	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
+	  	  	        //bullet.reset(this.player.x+10, this.player.y+27);
+	  	    		bullet.reset(this.player.x, this.player.y);
 	  	  	        
 	  	  	        this.game.physics.arcade.velocityFromRotation(this.bulletangle,-this.bulletspeed,bullet.body.velocity);
 	  	  	        
@@ -164,7 +177,8 @@ ProShooter.Game.prototype = {
 	  	    	}else if(this.direction == 1){
 	  	    		//right
 	  	  	    	//  And fire it
-	  	    		bullet.reset(this.player.x+42, this.player.y+27);
+	  	    		//bullet.reset(this.player.x+42, this.player.y+27);
+	  	    		bullet.reset(this.player.x, this.player.y);
 	  	    		this.game.physics.arcade.velocityFromRotation(this.bulletangle,this.bulletspeed,bullet.body.velocity);
 	  	    		bullet.rotation = this.bulletangle;
 	  	    	}
