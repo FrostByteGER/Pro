@@ -156,7 +156,6 @@ ProShooter.Game.prototype = {
         this.game.debug.text("FPS: " + this.game.time.fps + "   Health: " + this.health || '--', 20, 70, "#00ff00", "40px Courier");
         this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x + "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20, 140, "#00ff00", "20px Courier");
         this.game.debug.text("Player X: " + this.player.x+25 + "   Player Y: " + this.player.y+25|| '--', 20, 200, "#00ff00", "20px Courier");
-        this.game.debug.text("P: "+this.player.x+" M:"+this.mousx+" d:"+this.direction|| '--', 20, 70, "#00ff00", "40px Courier");
         
     },
  
