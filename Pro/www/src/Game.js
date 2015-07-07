@@ -22,8 +22,8 @@ ProShooter.Game.prototype = {
 		// Map
 		this.map = this.add.group();
 		this.map.create(0,0, 'background');
-		this.map.create(0,0, 'buildings')
-		this.game.add.sprite(0, 0, 'map');
+		//this.map.create(0,0, 'buildings')
+		//this.game.add.sprite(0, 0, 'map');
 
 		// create player
 		//this.player = this.game.add.sprite(100, 300, 'player');
@@ -97,10 +97,12 @@ ProShooter.Game.prototype = {
 		
 		this.mobs.enableBody = true;
 		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
+		/*
 		for(var i = 0; i < 5; i++){
 			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
 		}
-	    music.play();
+		*/
+	    //music.play();
 
 	},
 
@@ -197,20 +199,22 @@ ProShooter.Game.prototype = {
 				mob.scale.x *= -1;
 			}
 		}
-		
+	
 		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
 		}
 		
-		if(this.player.x-150 < this.boundsXmax){
+		if(this.player.x+1000 > this.boundsXmax){
+			this.map.x = this.player.x-800;
+			this.boundsXmax = this.player.x+1600;
+			this.boundsXmin = this.player.y-1600;
+			if(this.boundsXmin < 0){
+				this.boundsXmin = 0;
+			}
 			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
-			this.boundsXmax = this.player.x+800;
-			this.boundsXmin = this.player.y-800;
 		}
 		
-		if(this.boundsXmin < 0){
-			this.boundsXmin = 0;
-		}
+
 		
 	},
 
@@ -230,7 +234,7 @@ ProShooter.Game.prototype = {
 		this.game.debug.text("Player X: " + this.player.x + 25
 				+ "   Player Y: " + this.player.y + 25 || '--', 20, 200,
 				"#00ff00", "20px Courier");
-		this.game.debug.text(this.playerShootAngleX+" "+this.playerShootAngleY || '--', 20, 230,
+		this.game.debug.text(this.boundsXmax+" "+this.boundsXmin || '--', 20, 230,
 				"#00ff00", "20px Courier");
 	},
 
