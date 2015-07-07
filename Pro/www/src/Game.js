@@ -11,9 +11,12 @@ ProShooter.Game.prototype = {
 	},
 
 	create : function() {
-
-		this.game.world.setBounds(0, 0, 1600, 352);
-
+		
+		this.boundsXmax = 1600;
+		this.boundsXmin = 0;
+		
+		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
+		
 		// Map
 		this.map = this.game.add.sprite(0, 0, 'map');
 
@@ -193,10 +196,21 @@ ProShooter.Game.prototype = {
 			this.addRandomPlatform();
 		}
 		
+		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
+		
+		this.boundsXmax = this.player.x+800;
+		this.boundsXmin = this.player.y-800;
+		
+		if(this.boundsXmin < 0){
+			this.boundsXmin = 0;
+		}
+		
 	},
 
 	render : function()
-
+	
+	
+	
 	{
 		//this.game.debug.body(this.player);
 		for(var i = 0; i < this.mobs.countLiving(); i++){
