@@ -22,8 +22,8 @@ ProShooter.Game.prototype = {
 		// Map
 		this.map = this.add.group();
 		this.map.create(0,0, 'background');
-		this.map.create(0,0, 'buildings')
-		this.game.add.sprite(0, 0, 'map');
+		//this.map.create(0,0, 'buildings')
+		//this.game.add.sprite(0, 0, 'map');
 
 		this.player = this.add.sprite(32, this.world.height - 150, 'dude');
 		this.game.physics.arcade.enable(this.player);
@@ -94,9 +94,10 @@ ProShooter.Game.prototype = {
 		
 		this.mobs.enableBody = true;
 		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
+		/*
 		for(var i = 0; i < 5; i++){
 			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
-		}
+		}*/
 	    //music.play();
 
 	},
@@ -194,20 +195,22 @@ ProShooter.Game.prototype = {
 				mob.scale.x *= -1;
 			}
 		}
-		
+	
 		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
 		}
 		
-		if(this.player.x-150 < this.boundsXmax){
+		if(this.player.x+1000 > this.boundsXmax){
+			this.map.x = this.player.x-800;
+			this.boundsXmax = this.player.x+1600;
+			this.boundsXmin = this.player.y-1600;
+			if(this.boundsXmin < 0){
+				this.boundsXmin = 0;
+			}
 			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
-			this.boundsXmax = this.player.x+800;
-			this.boundsXmin = this.player.y-800;
 		}
 		
-		if(this.boundsXmin < 0){
-			this.boundsXmin = 0;
-		}
+
 		
 	},
 
@@ -227,7 +230,7 @@ ProShooter.Game.prototype = {
 		this.game.debug.text("Player X: " + this.player.x + 25
 				+ "   Player Y: " + this.player.y + 25 || '--', 20, 200,
 				"#00ff00", "20px Courier");
-		this.game.debug.text(this.playerShootAngleX+" "+this.playerShootAngleY || '--', 20, 230,
+		this.game.debug.text(this.boundsXmax+" "+this.boundsXmin || '--', 20, 230,
 				"#00ff00", "20px Courier");
 	},
 
@@ -296,18 +299,28 @@ ProShooter.Game.prototype = {
 	
 	addRandomPlatform : function(){
 		
-		// this.lastPlatformX+this.game.rnd.integerInRange(0,0)+
 		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+this.game.rnd.integerInRange(0,200);
 		
 		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-50,50);
 		
 		this.platformsize = this.game.rnd.integerInRange(5,10);
 		
-		if(this.lastPlatformY < 200){
+		if(this.lastPlatformY < 100){
 			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
 		}
-		if(this.lastPlatformY > this.world.height - 128){
-			this.lastPlatformY = this.world.height-128;
+		if(this.lastPlatformY > this.world.height - 50){
+			this.lastPlatformY = this.world.height-50;
+		}
+		
+		if(this.game.rnd.integerInRange(0,50) > 45){
+			
+			this.platformsize = this.game.rnd.integerInRange(5,10)+10;
+			
+			
+			temp = {};
+			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
+			temp.y = this.lastPlatformY;
+			this.spawnMob(temp, 'alien', 1, 100, ((this.platformsize+1)*8)-70);
 		}
 		
 		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.platformsize);
