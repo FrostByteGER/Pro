@@ -272,7 +272,7 @@ ProShooter.Game.prototype = {
 	
 	addRandomPlatform : function(){
 		
-		size = this.game.rnd.integerInRange(1,7);
+		size = this.game.rnd.integerInRange(5,10);
 		
 		this.lastPlatformX = this.lastPlatformX+this.game.rnd.integerInRange(50,150)+size*16;
 		
