@@ -15,8 +15,8 @@ ProShooter.Game.prototype = {
 		this.game.world.setBounds(0, 0, 2000, 528);
 
 		// Map
-		this.map = this.game.add.sprite(0, 0, 'map');
-		this.map.scale.setTo(1.5, 1.5);
+		//this.map = this.game.add.sprite(0, 0, 'map');
+		//this.map.scale.setTo(1.5, 1.5);
 
 		// create player
 		this.player = this.game.add.sprite(100, 300, 'player');
@@ -42,10 +42,19 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		var ground = this.platforms.create(0, this.world.height - 48, 'surface');
-		ground.scale.setTo(1.5, 1.5);
-		ground.body.immovable = true;
-
+		//var ground = this.platforms.create(0, this.world.height - 48, 'surface');
+		//ground.scale.setTo(1.5, 1.5);
+		//ground.body.immovable = true;
+		
+		this.fullPlatforms = new Array(15);
+		
+		this.addPlatform(0,this.world.height - 48,5);
+		this.addPlatform(200,450,5);
+		this.addPlatform(300,400,5);
+		this.addPlatform(400,300,5);
+		this.addPlatform(500,200,5);
+		this.addPlatform(400,100,5);
+		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
 			up : this.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -193,6 +202,7 @@ ProShooter.Game.prototype = {
 				"#00ff00", "20px Courier");
 		this.game.debug.text(this.playerShootAngleX+" "+this.playerShootAngleY || '--', 20, 230,
 				"#00ff00", "20px Courier");
+		
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -225,7 +235,7 @@ ProShooter.Game.prototype = {
 	},
 
 	fireBulletPlayer : function() {
-		var bullet = this.bullets.getFirstExists(false);
+		//var bullet = this.bullets.getFirstExists(false);
 
 		this.playermidx = this.player.x + 25;
 		this.playermidy = this.player.y + 25;
@@ -242,6 +252,39 @@ ProShooter.Game.prototype = {
 					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed);
 		}
+	},
+	
+	addPlatform : function(intx ,inty ,size){
+		
+		onePlatform = new Array(size);
+		
+		var palt = this.platforms.create(intx,inty, 'plat_start');
+		palt.body.immovable = true;
+		
+		onePlatform[0] = palt;
+		
+		for (var i = 1; i < size; i++) {
+			var palt = this.platforms.create(intx+(i*palt.width),inty, 'plat_mit');
+			palt.body.immovable = true;
+			onePlatform[0] = palt;
+		}
+		
+		var palt = this.platforms.create(intx+(size*palt.width),inty, 'plat_end');
+		palt.body.immovable = true;
+		onePlatform[size] = palt;
+		
+		for (var i = 0; i < this.fullPlatforms.length-1; i++) {
+			this.fullPlatforms[i] = this.fullPlatforms[i+1];
+		}
+		
+		this.fullPlatforms[this.fullPlatforms.length-1] = onePlatform;
+		
+	},
+	
+	addRandomPlatform : function(){
+		
+		addPlatform(this.player+this.player.width,this.player+height,this.game.rnd.integerInRange(0,7));
+		
 	},
 
 	collectBullet : function(platform, bullet) {
