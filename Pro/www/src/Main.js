@@ -5,7 +5,7 @@
 var ProShooter = ProShooter || {};
 
 
-ProShooter.game = new Phaser.Game(1280, 480, Phaser.AUTO, '');
+ProShooter.game = new Phaser.Game(1280, 352, Phaser.AUTO, '');
  
 ProShooter.game.state.add('Boot', ProShooter.Boot);
  
