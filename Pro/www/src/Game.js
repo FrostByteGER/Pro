@@ -46,17 +46,10 @@ ProShooter.Game.prototype = {
 		//ground.scale.setTo(1.5, 1.5);
 		//ground.body.immovable = true;
 		
-		this.fullPlatforms = new Array(15);
-		
 		this.addPlatform(0,this.world.height - 48,5);
-		this.addPlatform(200,450,5);
-		this.addPlatform(300,400,5);
-		this.addPlatform(400,300,5);
-		this.addPlatform(500,200,5);
-		this.addPlatform(400,100,5);
 		
-		this.lastPlatformY = 100;
-		this.lastPlatformX = 400;
+		this.lastPlatformY = this.world.height - 48;
+		this.lastPlatformX = 5*16;
 		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
@@ -190,7 +183,7 @@ ProShooter.Game.prototype = {
 			this.shootcooldown--;
 		}
 		
-		if(this.lastPlatformX-400 < this.player.x){
+		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
 		}
 		
@@ -264,46 +257,35 @@ ProShooter.Game.prototype = {
 	
 	addPlatform : function(intx ,inty ,size){
 		
-		onePlatform = new Array(size);
-		
 		var palt = this.platforms.create(intx,inty, 'plat_start');
 		palt.body.immovable = true;
-		
-		onePlatform[0] = palt;
 		
 		for (var i = 1; i < size; i++) {
 			var palt = this.platforms.create(intx+(i*palt.width),inty, 'plat_mit');
 			palt.body.immovable = true;
-			onePlatform[0] = palt;
 		}
 		
 		var palt = this.platforms.create(intx+(size*palt.width),inty, 'plat_end');
 		palt.body.immovable = true;
-		onePlatform[size] = palt;
-		
-		for (var i = 0; i < this.fullPlatforms.length-1; i++) {
-			this.fullPlatforms[i] = this.fullPlatforms[i+1];
-		}
-		
-		this.fullPlatforms[this.fullPlatforms.length-1] = onePlatform;
 		
 	},
 	
 	addRandomPlatform : function(){
 		
-		this.lastPlatformX = this.lastPlatformX+this.game.rnd.integerInRange(100,300);
+		size = this.game.rnd.integerInRange(1,7);
 		
-		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-150,150);
+		this.lastPlatformX = this.lastPlatformX+this.game.rnd.integerInRange(50,150)+size*16;
 		
-		if(this.lastPlatformY < 60){
-			this.lastPlatformY = 60;
+		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-50,50);
+		
+		if(this.lastPlatformY < 200){
+			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
 		}
-		if(this.lastPlatformY > this.world.height-60){
-			this.lastPlatformY = this.world.height-60;
+		if(this.lastPlatformY > this.world.height){
+			this.lastPlatformY = this.world.height-20;
 		}
 		
-		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.game.rnd.integerInRange(1,7));
-
+		this.addPlatform(this.lastPlatformX , this.lastPlatformY , size);
 		
 	},
 
