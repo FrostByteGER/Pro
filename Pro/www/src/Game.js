@@ -202,10 +202,11 @@ ProShooter.Game.prototype = {
 			this.addRandomPlatform();
 		}
 		
-		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
-		
-		this.boundsXmax = this.player.x+800;
-		this.boundsXmin = this.player.y-800;
+		if(this.player.x-150 < this.boundsXmax){
+			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
+			this.boundsXmax = this.player.x+800;
+			this.boundsXmin = this.player.y-800;
+		}
 		
 		if(this.boundsXmin < 0){
 			this.boundsXmin = 0;
@@ -214,8 +215,6 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function()
-	
-	
 	
 	{
 		//this.game.debug.body(this.player);
