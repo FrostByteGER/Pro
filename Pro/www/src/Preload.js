@@ -23,15 +23,13 @@ ProShooter.Preload.prototype = {
     //this.load.setPreloadSprite(this.preloadBar);
  
     //load game assets
-	
-    this.load.image('sky','asset/sky.png');
     this.load.image('ground','asset/platform.png');
-    this.load.image('star','asset/star.png');
+    //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
     this.load.image('surface', 'asset/maps/mapsurface2.png');
     this.load.image('alien', 'asset/alien.png');
-    this.load.image('background', 'asset/maps/mainbackground2.png');
+    this.load.image('background', 'asset/maps/mapbackground1.png');
     this.load.image('plat', 'asset/plat.png');
     this.load.image('plat_start', 'asset/plat_start.png');
     this.load.image('plat_mit', 'asset/plat_mit.png');

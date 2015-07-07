@@ -31,9 +31,6 @@ ProShooter.Game.prototype = {
 		//this.map.create(0,0, 'buildings')
 		//this.game.add.sprite(0, 0, 'map');
 
-		// create player
-		//this.player = this.game.add.sprite(100, 300, 'player');
-
 		this.player = this.add.sprite(32, this.world.height - 150, 'dude');
 		this.game.physics.arcade.enable(this.player);
 
@@ -42,7 +39,7 @@ ProShooter.Game.prototype = {
 		this.player.speedy = -475;
 		this.player.health = 100;
 		this.player.body.gravity.y = 1000;
-		this.player.body.bounce.y = 0.2;
+		this.player.body.bounce.y = 0.0;
 		this.player.body.collideWorldBounds = true;
 		this.player.animations.add('left', [ 16, 17, 18, 19, 20, 21, 22, 23 ],
 				10, true);
@@ -105,7 +102,6 @@ ProShooter.Game.prototype = {
 		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
 		
 		this.pickups = this.game.add.group();
-		
 	    //music.play();
 
 	},
