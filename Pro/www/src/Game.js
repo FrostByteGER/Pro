@@ -137,7 +137,7 @@ ProShooter.Game.prototype = {
     	  
     	  if(this.shootcooldown == 0){
         	  for (var i = 0; i < this.bulletpershoot; i++) {
-        		  this.fireBullet();
+        		  this.fireBulletPlayer();
         	  }
         	  this.shootcooldown = this.shootspeed;
     	  }
@@ -158,49 +158,51 @@ ProShooter.Game.prototype = {
         this.game.debug.text("Player X: " + this.player.x+25 + "   Player Y: " + this.player.y+25|| '--', 20, 200, "#00ff00", "20px Courier");
         
     },
- 
     
-	fireBullet: function() {
-	  	    var bullet = this.bullets.getFirstExists(false);
+    fireBullet: function(scrIntx ,scrInty ,endIntx ,endInty ,bulletGroup ,bulletSpread ,bulletSpeed) {
+	    var bullet = bulletGroup.getFirstExists(false);
+	  	  
+	  	this.bulletangle = Math.atan((endInty-scrInty)/(endIntx-scrIntx))+(this.game.rnd.integerInRange(-bulletSpread, bulletSpread)/100);   
+	  	
+	  	if(bullet){
+		  	if(scrIntx < endIntx){
+	  	    	//right
+	  	  	    //  And fire it
+	  	    	bullet.reset(this.player.x+42, this.player.y+27);
+	  	    	//bullet.reset(this.player.x, this.player.y);
+	  	    	this.game.physics.arcade.velocityFromRotation(this.bulletangle,bulletSpeed,bullet.body.velocity);
+	  	    	bullet.rotation = this.bulletangle;
+		  	}else{
+	  	  		//  And fire it
+	  	  		bullet.reset(this.player.x+10, this.player.y+27);
+	  	  		//bullet.reset(this.player.x, this.player.y);
+	  	  	        
+	  	  		this.game.physics.arcade.velocityFromRotation(this.bulletangle,-bulletSpeed,bullet.body.velocity);
+	  	  	        
+	  	  	    bullet.rotation = this.bulletangle+Math.PI;
+		  	}
+	  	}
+  },
+    
+  fireBulletPlayer: function() {
+	    var bullet = this.bullets.getFirstExists(false);
 	  	  	
-	  	    this.playermidx = this.player.x+25;
-	  	    this.playermidy = this.player.y+25;
-	  	    
-	  	    this.mousx = this.game.input.mousePointer.x + this.game.camera.x;
-	  	    this.mousy = this.game.input.mousePointer.y;
-	  	    
-	  	    this.bulletangle = Math.atan((this.mousy-this.playermidy)/(this.mousx-this.playermidx))+(this.game.rnd.integerInRange(-this.bulletspred, this.bulletspred)/100);   
-	  	    
-	  	    if (bullet && this.shootcooldown == 0)
-	  	    {	
-	  	    	//left
-	  	    	if(this.direction == -1){
-	  	  	    	//  And fire it
-	  	  	        bullet.reset(this.player.x+10, this.player.y+27);
-	  	    		//bullet.reset(this.player.x, this.player.y);
-	  	  	        
-	  	  	        this.game.physics.arcade.velocityFromRotation(this.bulletangle,-this.bulletspeed,bullet.body.velocity);
-	  	  	        
-	  	  	        bullet.rotation = this.bulletangle+Math.PI;
-	  	    	}else if(this.direction == 1){
-	  	    		//right
-	  	  	    	//  And fire it
-	  	    		bullet.reset(this.player.x+42, this.player.y+27);
-	  	    		//bullet.reset(this.player.x, this.player.y);
-	  	    		this.game.physics.arcade.velocityFromRotation(this.bulletangle,this.bulletspeed,bullet.body.velocity);
-	  	    		bullet.rotation = this.bulletangle;
-	  	    	}
-	  	    }
-	  	    
-	  	    //  Make bullet come out of tip of ship with right angle
-	  	    
+	  	this.playermidx = this.player.x+25;
+	  	this.playermidy = this.player.y+25;
+	  	  
+	  	this.mousx = this.game.input.mousePointer.x + this.game.camera.x;
+	  	this.mousy = this.game.input.mousePointer.y;
 
-	  	    
-	},
+	  	if(this.direction == -1){
+	  		this.fireBullet(this.player.x+10,this.player.y+27,this.mousx,this.mousy,this.bullets,this.bulletspred,this.bulletspeed);
+	  	}else{
+	  		this.fireBullet(this.player.x+42,this.player.y+27,this.mousx,this.mousy,this.bullets,this.bulletspred,this.bulletspeed);
+	  	} 	
+  },
 	
-	collectBullet: function (platform, bullet){
-		bullet.kill();
-    }
+  collectBullet: function (platform, bullet){
+	  bullet.kill();
+  }
   
   
   
