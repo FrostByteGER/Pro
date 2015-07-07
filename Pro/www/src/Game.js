@@ -309,12 +309,20 @@ ProShooter.Game.prototype = {
 			var boss = this.bosse.getAt(i);
 			boss.x = this.game.camera.x;
 			
+			if(boss.x < this.player.x-500){
+				boss.x -= (this.player.x-500)/boss.x/10;
+			}else if(boss.x > this.player.x-500){
+				boss.x += boss.x/(this.player.x-500)/10;
+			}
+			
+			/*
+			
 			if(boss.x < this.game.camera.x){
 				boss.x -= this.game.camera.x/boss.x/10;
 			}else if(boss.x > this.game.camera.x){
 				boss.x += boss.x/this.game.camera.x/10;
 			}
-			
+			*/
 			if(boss.y < this.player.y){
 				boss.y += this.player.y/boss.y;
 			}else if(boss.y > this.player.y){
