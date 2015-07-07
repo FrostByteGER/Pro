@@ -50,8 +50,7 @@ ProShooter.Preload.prototype = {
     this.load.audio('damage', 'asset/sfx/hurt.ogg');
     this.load.audio('laserbullet1', 'asset/sfx/laser1.ogg');
     this.load.audio('laserbullet2', 'asset/sfx/laser2.ogg');
-    
- 
+    this.load.audio('suicide', 'asset/sfx/suicide.ogg');
   },
  
   create: function() {

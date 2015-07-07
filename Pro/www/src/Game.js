@@ -22,6 +22,8 @@ ProShooter.Game.prototype = {
 		this.lasersfx1.volume = 0.05;
 		this.lasersfx2 = this.game.add.audio('laserbullet2');
 		this.lasersfx2.volume = 0.2;
+		this.suicidesfx = this.game.add.audio('suicide');
+		this.suicidesfx.volume = 2.0;
 		this.music.loop = true;
 		this.music.volume = 0.12;
 		this.music.play();
@@ -535,7 +537,8 @@ ProShooter.Game.prototype = {
 				mob.alive = false;
 				mob.kill();
 				this.mobs.remove(mob);	
-				mob.deathsfx.play();
+				this.suicidesfx.play();
+				//mob.deathsfx.play();
 			}
 		}else {
 			if(this.game.rnd.integerInRange(0,100) > 85){
@@ -543,7 +546,8 @@ ProShooter.Game.prototype = {
 			}
 			mob.kill();
 			this.mobs.remove(mob);		
-			mob.deathsfx.play();
+			//mob.deathsfx.play();
+			this.suicidesfx.play();
 		}
 		
 	},
