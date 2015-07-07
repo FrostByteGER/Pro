@@ -17,7 +17,7 @@ ProShooter.Game.prototype = {
 		// redWall
 		
 		this.redWallSpeed = 2;
-		this.redWallbuffer = 50;
+		this.redWallbuffer = 250;
 		this.redWallX = -this.redWallbuffer;
 		
 		
@@ -101,6 +101,16 @@ ProShooter.Game.prototype = {
 		this.mobs.enableBody = true;
 		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
 		
+		// bosse
+		
+		this.bosse = this.add.group();
+		
+		temp = {};
+		temp.x = this.player.x;
+		temp.y = this.player.y;
+		
+		this.spwanBoss(temp);
+		
 		// pickups
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
@@ -109,8 +119,10 @@ ProShooter.Game.prototype = {
 		this.pickups.setAll('outOfBoundsKill', true);
 		this.pickups.setAll('checkWorldBounds', true);
 		
-	    //music.play();
 
+		
+	    //music.play();
+		
 	},
 
 	update : function() {
@@ -236,6 +248,30 @@ ProShooter.Game.prototype = {
 			}
 		}
 		
+		for(var i = 0; i < this.bosse.length; i++){
+			var boss = this.bosse.getAt(i);
+			boss.x = this.game.camera.x;
+			
+			if(boss.x < this.game.camera.x){
+				boss.x -= this.game.camera.x/boss.x/10;
+			}else if(boss.x > this.game.camera.x){
+				boss.x += boss.x/this.game.camera.x/10;
+			}
+			
+			if(boss.y < this.player.y){
+				boss.y += this.player.y/boss.y;
+			}else if(boss.y > this.player.y){
+				boss.y -= boss.y/this.player.y;
+			}
+			/*
+			if(boss.y > this.player.y){
+				boss.y--;
+			}else if(boss.y < this.player.y){
+				boss.y++;
+			}
+			*/
+		}
+		
 		this.redWallX += this.redWallSpeed;
 		
 	},
@@ -327,17 +363,19 @@ ProShooter.Game.prototype = {
 	
 	addRandomPlatform : function(){
 		
-		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+this.game.rnd.integerInRange(0,200);
+		var inx = this.game.rnd.integerInRange(1,200);
 		
-		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-50,50);
+		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+inx;
+		
+		this.lastPlatformY = this.lastPlatformY+(this.game.rnd.integerInRange(-50,50)*(2-(this.game.rnd.integerInRange(1,200)/200)));
 		
 		this.platformsize = this.game.rnd.integerInRange(5,10);
 		
-		if(this.lastPlatformY < 100){
-			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
+		if(this.lastPlatformY < 150){
+			this.lastPlatformY = 150+this.game.rnd.integerInRange(0,50);
 		}
 		if(this.lastPlatformY > this.world.height - 50){
-			this.lastPlatformY = this.world.height-50;
+			this.lastPlatformY = this.world.height-50-this.game.rnd.integerInRange(0,50);
 		}
 		
 		if(this.game.rnd.integerInRange(0,100) > 85){
@@ -399,8 +437,7 @@ ProShooter.Game.prototype = {
 			this.bulletspred = 30;
 			this.bulletpershoot = 5;
 		}
-		
-		
+		this.pickups.remove(source);
 		source.kill();
 	},
 	
@@ -444,6 +481,14 @@ ProShooter.Game.prototype = {
 		mob.spawnposition = position;
 		mob.damage = 100;
 		return mob;
+	},
+	
+	spwanBoss : function(position){
+		
+		var boss = this.bosse.create(position.x, position.y, 'boss');	
+		boss.health = 100;
+		boss.name = name;
+		boss.anchor.setTo(.5, 1);
+		boss.spawnposition = position;
 	}
-
 };

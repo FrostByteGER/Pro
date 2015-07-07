@@ -34,12 +34,11 @@ ProShooter.Preload.prototype = {
     this.load.image('plat_start', 'asset/plat_start.png');
     this.load.image('plat_mit', 'asset/plat_mit.png');
     this.load.image('plat_end', 'asset/plat_end.png');
-    this.load.image('pickup0', 'asset/star.png');
-    this.load.image('pickup1', 'asset/diamond.png');
-    this.load.image('pickup2', 'asset/firstaid.png');
+    this.load.image('pickup0', 'asset/R.png');
+    this.load.image('pickup1', 'asset/M.png');
+    this.load.image('pickup2', 'asset/S.png');
+    this.load.image('boss', 'asset/boss.png');
     this.load.spritesheet('dude','asset/Player.png', 50, 50);
-    
- 
   },
  
   create: function() {
