@@ -24,6 +24,7 @@ ProShooter.Preload.prototype = {
  
     //load game assets
 	
+	this.load.audio('levelmusic', 'asset/smb.ogg');
     this.load.image('sky','asset/sky.png');
     this.load.image('ground','asset/platform.png');
     this.load.image('star','asset/star.png');
