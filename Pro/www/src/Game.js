@@ -25,9 +25,6 @@ ProShooter.Game.prototype = {
 		this.map.create(0,0, 'buildings')
 		this.game.add.sprite(0, 0, 'map');
 
-		// create player
-		//this.player = this.game.add.sprite(100, 300, 'player');
-
 		this.player = this.add.sprite(32, this.world.height - 150, 'dude');
 		this.game.physics.arcade.enable(this.player);
 
@@ -100,7 +97,7 @@ ProShooter.Game.prototype = {
 		for(var i = 0; i < 5; i++){
 			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
 		}
-	    music.play();
+	    //music.play();
 
 	},
 
