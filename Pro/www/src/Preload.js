@@ -30,6 +30,10 @@ ProShooter.Preload.prototype = {
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
     this.load.image('surface', 'asset/maps/mapsurface.png');
+    this.load.image('plat', 'asset/plat.png');
+    this.load.image('plat_start', 'asset/plat_start.png');
+    this.load.image('plat_mit', 'asset/plat_mit.png');
+    this.load.image('plat_end', 'asset/plat_end.png');
     this.load.spritesheet('alien', 'asset/alien.png', 140, 80);
     this.load.spritesheet('dude','asset/Player.png', 50, 50);
     

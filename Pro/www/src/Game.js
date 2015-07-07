@@ -41,8 +41,15 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		var ground = this.platforms.create(0, this.world.height - 32, 'surface');
-		ground.body.immovable = true;
+		this.ground = this.add.sprite(0, this.world.height - 32, 'surface');
+		this.game.physics.arcade.enable(this.ground);
+		this.ground.body.immovable = true;
+		
+		this.addPlatform(0,this.world.height - 48,5);
+		
+		this.lastPlatformY = this.world.height - 48;
+		this.lastPlatformX = 5*16;
+		
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
@@ -64,7 +71,6 @@ ProShooter.Game.prototype = {
 		this.bullets.setAll('anchor.y', 1);
 		this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
-		this.bullets.setAll('damage',1);
 
 		this.shootspeed = 5;
 		this.shootcooldown = 0;
@@ -93,6 +99,8 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
 		this.physics.arcade.collide(this.player, this.platforms);
+		this.physics.arcade.collide(this.player, this.ground);
+		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
 
 		// Reset the players velocity (movement)
@@ -180,6 +188,10 @@ ProShooter.Game.prototype = {
 			}
 		}
 		
+		if(this.lastPlatformX-2000 < this.game.camera.x){
+			this.addRandomPlatform();
+		}
+		
 	},
 
 	render : function()
@@ -248,6 +260,40 @@ ProShooter.Game.prototype = {
 					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed);
 		}
+	},
+	
+	addPlatform : function(intx ,inty ,size){
+		
+		var palt = this.platforms.create(intx,inty, 'plat_start');
+		palt.body.immovable = true;
+		
+		for (var i = 1; i < size; i++) {
+			var palt = this.platforms.create(intx+(i*palt.width),inty, 'plat_mit');
+			palt.body.immovable = true;
+		}
+		
+		var palt = this.platforms.create(intx+(size*palt.width),inty, 'plat_end');
+		palt.body.immovable = true;
+		
+	},
+	
+	addRandomPlatform : function(){
+		
+		size = this.game.rnd.integerInRange(5,10);
+		
+		this.lastPlatformX = this.lastPlatformX+this.game.rnd.integerInRange(50,150)+size*16;
+		
+		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-50,50);
+		
+		if(this.lastPlatformY < 200){
+			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
+		}
+		if(this.lastPlatformY > this.world.height){
+			this.lastPlatformY = this.world.height-32;
+		}
+		
+		this.addPlatform(this.lastPlatformX , this.lastPlatformY , size);
+		
 	},
 
 	collectBullet : function(bullet) {
