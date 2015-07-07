@@ -12,37 +12,11 @@ ProShooter.Game.prototype = {
 
 	create : function() {
 
-		this.game.world.setBounds(0, 0, 2000, 480);
+		this.game.world.setBounds(0, 0, 2000, 528);
 
 		// Map
-		this.map = this.game.add.tilemap('mainmap');
-		this.map.addTilesetImage('Aparments 1','apartments');
-		this.map.addTilesetImage('background_gradient_3','background');
-		this.map.addTilesetImage('Church','church');
-		this.map.addTilesetImage('Airstrip','airstrip');
-		this.map.addTilesetImage('Cityhall','cityhall');
-		this.map.addTilesetImage('Docks','docks');
-		this.map.addTilesetImage('Hospital','hospital');
-		this.map.addTilesetImage('House','house');
-		this.map.addTilesetImage('Offices 1','offices');
-		this.map.addTilesetImage('Offices 2','offices2');
-		this.map.addTilesetImage('Offices 3','offices3');
-		this.map.addTilesetImage('Shack','shack');
-		this.map.addTilesetImage('Silo','silo');
-		this.map.addTilesetImage('Streetbariers 1','streetbarriers1');
-		this.map.addTilesetImage('Streetbarriers 2','streetbarriers2');
-		this.map.addTilesetImage('Supermarket','supermarket');
-		this.map.addTilesetImage('Warehouse','warehouse');
-		this.map.addTilesetImage('grass','grass');
-		this.backgroundlayer = this.map.createLayer('Background');
-		this.surfacelayer = this.map.createLayer('Surface');
-		//this.buildingslayer = this.map.createLayer('Buildings');
-		
-		this.map.setCollisionBetween(1, 2500, true, 'Surface');
-		this.backgroundlayer.resizeWorld();
-		
-		//this.map = this.game.add.sprite(0, 0, 'levelsegment1');
-		//this.map.scale.setTo(1.5, 1.5);
+		this.map = this.game.add.sprite(0, 0, 'map');
+		this.map.scale.setTo(1.5, 1.5);
 
 		// create player
 		this.player = this.game.add.sprite(100, 300, 'player');
@@ -68,6 +42,9 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
+		var ground = this.platforms.create(0, this.world.height - 48, 'surface');
+		ground.scale.setTo(1.5, 1.5);
+		ground.body.immovable = true;
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
@@ -107,10 +84,10 @@ ProShooter.Game.prototype = {
 
 	update : function() {
 
-		this.physics.arcade.overlap(this.surfacelayer, this.bullets,
+		this.physics.arcade.overlap(this.platforms, this.bullets,
 				this.collectBullet, null, this);
 
-		this.physics.arcade.collide(this.player, this.surfacelayer);
+		this.physics.arcade.collide(this.player, this.platforms);
 
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;
@@ -267,7 +244,7 @@ ProShooter.Game.prototype = {
 		}
 	},
 
-	collectBullet : function(bullet) {
+	collectBullet : function(platform, bullet) {
 		bullet.kill();
 	}
 
