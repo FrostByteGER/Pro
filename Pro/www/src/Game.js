@@ -7,7 +7,9 @@ ProShooter.Game.prototype = {
 
 	preload : function() {
 		this.game.time.advancedTiming = true;
-
+		music = this.game.add.audio('levelmusic');
+		music.loop = true;
+		music.volume = 0.12;
 	},
 
 	create : function() {
@@ -95,6 +97,8 @@ ProShooter.Game.prototype = {
 		for(var i = 0; i < 5; i++){
 			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
 		}
+	    music.play();
+
 	},
 
 	update : function() {
@@ -304,8 +308,8 @@ ProShooter.Game.prototype = {
 		if(this.lastPlatformY < 200){
 			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
 		}
-		if(this.lastPlatformY > this.world.height){
-			this.lastPlatformY = this.world.height-32;
+		if(this.lastPlatformY > this.world.height - 128){
+			this.lastPlatformY = this.world.height-128;
 		}
 		
 		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.platformsize);
