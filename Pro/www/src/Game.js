@@ -33,7 +33,7 @@ ProShooter.Game.prototype = {
 		this.player.speedy = -475;
 		this.player.health = 100;
 		this.player.body.gravity.y = 1000;
-		this.player.body.bounce.y = 0.2;
+		this.player.body.bounce.y = 0.0;
 		this.player.body.collideWorldBounds = true;
 		this.player.animations.add('left', [ 16, 17, 18, 19, 20, 21, 22, 23 ],
 				10, true);
