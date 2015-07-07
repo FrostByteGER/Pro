@@ -7,9 +7,24 @@ ProShooter.Game.prototype = {
 
 	preload : function() {
 		this.game.time.advancedTiming = true;
-		music = this.game.add.audio('levelmusic');
-		music.loop = true;
-		music.volume = 0.12;
+
+		this.musictrack = this.game.rnd.integerInRange(0,2);
+		if(this.musictrack == 2){
+			this.music = this.game.add.audio('action1');
+		}else if(this.musictrack == 1){
+			this.music = this.game.add.audio('action2');
+		}else{
+			this.music = this.game.add.audio('action3');
+		}
+		this.damagesfx = this.game.add.audio('damage');
+		this.damagesfx.volume  = 0.2;
+		this.lasersfx1 = this.game.add.audio('laserbullet1');
+		this.lasersfx1.volume = 0.05;
+		this.lasersfx2 = this.game.add.audio('laserbullet2');
+		this.lasersfx2.volume = 0.2;
+		this.music.loop = true;
+		this.music.volume = 0.12;
+		this.music.play();
 	},
 
 	create : function() {
@@ -40,6 +55,8 @@ ProShooter.Game.prototype = {
 		this.player.health = 100;
 		this.player.body.gravity.y = 1000;
 		this.player.body.bounce.y = 0.0;
+		this.player.sfx = this.damagesfx;
+		this.player.deathsfx = this.damagesfx;
 		this.player.body.collideWorldBounds = true;
 		this.player.animations.add('left', [ 16, 17, 18, 19, 20, 21, 22, 23 ],
 				10, true);
@@ -82,6 +99,14 @@ ProShooter.Game.prototype = {
 		this.bullets.setAll('anchor.y', 1);
 		this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
+		this.enemybullets = this.game.add.group();
+		this.enemybullets.enableBody = true;
+		this.enemybullets.physicsBodyType = Phaser.Physics.ARCADE;
+		this.enemybullets.createMultiple(25, 'laserbullet');
+		this.enemybullets.setAll('anchor.x', 0.5);
+		this.enemybullets.setAll('anchor.y', 1);
+		this.enemybullets.setAll('outOfBoundsKill', true);
+		this.enemybullets.setAll('checkWorldBounds', true);
 
 		this.shootspeed = 5;
 		this.shootcooldown = 0;
@@ -129,13 +154,45 @@ ProShooter.Game.prototype = {
 
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
-		this.physics.arcade.overlap(this.pickups, this.player, this.pickpuSomething, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
+		this.physics.arcade.overlap(this.pickups, this.player, this.pickpuSomething, null, this);
+		this.physics.arcade.overlap(this.player, this.enemybullets, this.damagePlayer, null, this);
+		this.physics.arcade.overlap(this.enemybullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.collide(this.player, this.platforms);
 		this.physics.arcade.collide(this.player, this.ground);
 		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
 		this.physics.arcade.collide(this.pickups, this.platforms);
+		
+		for(var i = 0; i < this.mobs.length; i++){
+			var enemy = this.mobs.getAt(i);
+			if(enemy.inCamera){
+				if (enemy.fireCooldown == 0) {
+					for (var i = 0; i < enemy.bulletsPerSalve; i++) {
+						var x = 0;
+						if(enemy.direction == 'left'){
+							x = -1;
+						}else{
+							x = 1;
+						}
+						if(enemy.x > this.player.x && x == -1){
+							this.fireBullet(enemy.x, enemy.y - 30, enemy.x + x, enemy.y - 30, this.enemybullets, 2, 300, this.lasersfx2);
+						}else if(enemy.x < this.player.x && x == 1){
+							this.fireBullet(enemy.x, enemy.y - 30, enemy.x + x, enemy.y - 30, this.enemybullets, 2, this.lasersfx2);
+						}
+						
+					}
+					enemy.fireCooldown = 20;
+				}
+
+				if (enemy.fireCooldown > 0) {
+					enemy.fireCooldown--;
+				}
+				
+
+			}
+		}
+
 
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;		
@@ -295,7 +352,7 @@ ProShooter.Game.prototype = {
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
-			bulletSpread, bulletSpeed) {
+			bulletSpread, bulletSpeed, sfx) {
 		var bullet = bulletGroup.getFirstExists(false);
 
 		this.bulletangle = Math.atan((endInty - scrInty) / (endIntx - scrIntx))
@@ -319,6 +376,7 @@ ProShooter.Game.prototype = {
 
 				bullet.rotation = this.bulletangle + Math.PI;
 			}
+			sfx.play();
 		}
 	},
 
@@ -334,11 +392,11 @@ ProShooter.Game.prototype = {
 		if (this.direction == -1) {
 			this.fireBullet(this.player.x + 10, this.player.y + 27,this.player.x + 10 + this.playerShootAngleX,
 					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
-					this.bulletspeed);
+					this.bulletspeed, this.lasersfx1);
 		} else {
 			this.fireBullet(this.player.x + 42, this.player.y + 27, this.player.x + 42 + this.playerShootAngleX,
 					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
-					this.bulletspeed);
+					this.bulletspeed, this.lasersfx1);
 		}
 	},
 	
@@ -386,7 +444,7 @@ ProShooter.Game.prototype = {
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
 			temp.y = this.lastPlatformY;
-			this.spawnMob(temp, 'alien', 1, 100, ((this.platformsize+1)*8)-70);
+			this.spawnMob(temp, 'alien', 1, 50, ((this.platformsize+1)*8)-70,this.damagesfx,this.damagesfx);
 		}
 		
 		if(this.game.rnd.integerInRange(0,100) > 95){
@@ -446,13 +504,17 @@ ProShooter.Game.prototype = {
 	damagePlayer : function(player, source) {
 		if(player.health > 0){
 			player.health -= source.damage;
+			player.sfx.play();
 			if(player.health <= 0){
 				player.alive = false;
 				player.kill();
+				player.deathsfx.play();
 			}
 		}else{
 			player.alive = false;
 			player.kill();
+			player.deathsfx.play();
+			//player.destroy(true);
 		}
 	},
 	
@@ -460,16 +522,25 @@ ProShooter.Game.prototype = {
 		this.collectBullet(source);
 		if(mob.health > 0){
 			mob.health -= 10;
+			mob.sfx.play();
+			if(mob.health <= 0){
+				mob.alive = false;
+				mob.kill();
+				this.mobs.remove(mob);	
+				mob.deathsfx.play();
+			}
 		}else {
 			if(this.game.rnd.integerInRange(0,100) > 85){
 				this.spawnPickup(mob.spawnposition);
 			}
 			mob.kill();
+			this.mobs.remove(mob);		
+			mob.deathsfx.play();
 		}
 		
 	},
 	
-	spawnMob : function(position, sprite, damage, health, range) {
+	spawnMob : function(position, sprite, damage, health, range, sfx, deathsfx) {
 		var mob = this.mobs.create(position.x, position.y, sprite);
 		mob.damage = damage;
 		mob.health = health;
@@ -478,8 +549,12 @@ ProShooter.Game.prototype = {
 		mob.body.gravity.y = 1000;
 		mob.direction = 'right';
 		mob.anchor.setTo(.5, 1);
+		mob.fireCooldown = 20;
 		mob.spawnposition = position;
 		mob.damage = 100;
+		mob.bulletsPerSalve = 1;
+		mob.sfx = sfx;
+		mob.deathsfx = deathsfx;
 		return mob;
 	},
 	
