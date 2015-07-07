@@ -12,11 +12,10 @@ ProShooter.Game.prototype = {
 
 	create : function() {
 
-		this.game.world.setBounds(0, 0, 2000, 528);
+		this.game.world.setBounds(0, 0, 1600, 352);
 
 		// Map
 		this.map = this.game.add.sprite(0, 0, 'map');
-		this.map.scale.setTo(1.5, 1.5);
 
 		// create player
 		this.player = this.game.add.sprite(100, 300, 'player');
@@ -27,7 +26,7 @@ ProShooter.Game.prototype = {
 		// Player Movementspeed
 		this.player.speedx = 300;
 		this.player.speedy = -475;
-
+		this.player.health = 100;
 		this.player.body.gravity.y = 1000;
 		this.player.body.bounce.y = 0.2;
 		this.player.body.collideWorldBounds = true;
@@ -42,8 +41,7 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		var ground = this.platforms.create(0, this.world.height - 48, 'surface');
-		ground.scale.setTo(1.5, 1.5);
+		var ground = this.platforms.create(0, this.world.height - 32, 'surface');
 		ground.body.immovable = true;
 
 		this.cursors = this.input.keyboard.createCursorKeys();
@@ -55,7 +53,6 @@ ProShooter.Game.prototype = {
 		};
 
 		this.direction = 1;
-		this.health = 100;
 
 		// shoot
 
@@ -67,6 +64,7 @@ ProShooter.Game.prototype = {
 		this.bullets.setAll('anchor.y', 1);
 		this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
+		this.bullets.setAll('damage',1);
 
 		this.shootspeed = 5;
 		this.shootcooldown = 0;
@@ -78,24 +76,29 @@ ProShooter.Game.prototype = {
 		this.playerShootAngleY = 0;
 		this.playerShootAngleX = 0;
 		
-		this.fireButton = this.game.input.keyboard
-				.addKey(Phaser.Keyboard.SPACEBAR);
+		this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		
+		this.mobs = this.add.group();
+		
+		this.mobs.enableBody = true;
+		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
+		for(var i = 0; i < 5; i++){
+			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
+		}
 	},
 
 	update : function() {
 
-		this.physics.arcade.overlap(this.platforms, this.bullets,
-				this.collectBullet, null, this);
-
+		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
+		this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
+		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
 		this.physics.arcade.collide(this.player, this.platforms);
+		this.physics.arcade.collide(this.mobs, this.platforms);
 
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;
 
 		if (this.wasd.left.isDown) {
-			
-			// this.cursors.left.isDown
-			// Move to the left
 			this.player.body.velocity.x = -this.player.speedx;
 
 			this.player.animations.play('left');
@@ -103,8 +106,6 @@ ProShooter.Game.prototype = {
 			this.playerShootAngleX = -1;
 		} else if (this.wasd.right.isDown) {
 			
-			// this.cursors.right.isDown
-			// Move to the right
 			this.player.body.velocity.x = this.player.speedx;
 
 			this.player.animations.play('right');
@@ -113,7 +114,6 @@ ProShooter.Game.prototype = {
 		} else if (this.player.body.velocity.x == 0
 				|| this.player.body.velocity.y == 0
 				&& this.player.body.touching.down) {
-			// Stand still
 			
 			this.player.animations.stop();
 			if (this.direction == -1) {
@@ -123,7 +123,6 @@ ProShooter.Game.prototype = {
 			}
 		}
 		
-		// this.cursors.up.isDown
 		if ((this.wasd.up.isDown)
 				&& this.player.body.touching.down) {
 			this.player.body.velocity.y = this.player.speedy;
@@ -150,21 +149,7 @@ ProShooter.Game.prototype = {
 			this.playerShootAngleX = this.direction;
 		}
 		
-		// this.game.input.activePointer.isDown
-		
 		if (this.fireButton.isDown) {
-			// Grab the first bullet we can from the pool
-			/*
-			if (this.game.input.mousePointer.x + this.game.camera.x < this.playermidx) {
-				if (this.direction == 1) {
-					this.direction = -1;
-				}
-			} else {
-				if (this.direction == -1) {
-					this.direction = 1;
-				}
-			}
-			*/
 			if (this.shootcooldown == 0) {
 				for (var i = 0; i < this.bulletpershoot; i++) {
 					this.fireBulletPlayer();
@@ -177,14 +162,36 @@ ProShooter.Game.prototype = {
 		if (this.shootcooldown > 0) {
 			this.shootcooldown--;
 		}
+		
+		for(var i = 0; i < this.mobs.length; i++){
+			var mob = this.mobs.getAt(i);
+			if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
+				mob.x += 2;
+			}else if(mob.direction == 'right'){
+				mob.direction = 'left';
+				mob.scale.x *= -1;
+			}
+			
+			if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
+				mob.x -= 2;
+			}else if(mob.direction == 'left'){
+				mob.direction = 'right';
+				mob.scale.x *= -1;
+			}
+		}
+		
 	},
 
 	render : function()
 
 	{
+		//this.game.debug.body(this.player);
+		for(var i = 0; i < this.mobs.countLiving(); i++){
+			//this.game.debug.body(this.mobs.getAt(i));
+		}
 		this.game.debug.cameraInfo(this.game.camera, 550, 32);
 		this.game.debug.text("FPS: " + this.game.time.fps + "   Health: "
-				+ this.health || '--', 20, 70, "#00ff00", "40px Courier");
+				+ this.mobs.getAt(0).health || '--', 20, 70, "#00ff00", "40px Courier");
 		this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x
 				+ "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20,
 				140, "#00ff00", "20px Courier");
@@ -216,8 +223,7 @@ ProShooter.Game.prototype = {
 				bullet.reset(this.player.x + 10, this.player.y + 27);
 				// bullet.reset(this.player.x, this.player.y);
 
-				this.game.physics.arcade.velocityFromRotation(this.bulletangle,
-						-bulletSpeed, bullet.body.velocity);
+				this.game.physics.arcade.velocityFromRotation(this.bulletangle, -bulletSpeed, bullet.body.velocity);
 
 				bullet.rotation = this.bulletangle + Math.PI;
 			}
@@ -244,129 +250,45 @@ ProShooter.Game.prototype = {
 		}
 	},
 
-	collectBullet : function(platform, bullet) {
+	collectBullet : function(bullet) {
 		bullet.kill();
+	},
+	
+	damagePlayer : function(player, source) {
+		if(player.health > 0){
+			player.health -= source.damage;
+			if(player.health <= 0){
+				player.alive = false;
+				player.kill();
+			}
+		}else{
+			player.alive = false;
+			player.kill();
+		}
+	},
+	
+	hitMob : function(mob, source) {
+		this.collectBullet(source);
+		if(mob.health > 0){
+			mob.health -= 10;
+		}else {
+			mob.kill();
+		}
+		
+	},
+	
+	spawnMob : function(position, sprite, damage, health, range) {
+		var mob = this.mobs.create(position.x, position.y, sprite);
+		mob.damage = damage;
+		mob.health = health;
+		mob.range = range;
+		mob.name = name;
+		mob.body.gravity.y = 1000;
+		mob.direction = 'right';
+		mob.anchor.setTo(.5, 1);
+		mob.spawnposition = position;
+		mob.damage = 100;
+		return mob;
 	}
 
 };
-
-/*
- *  // create BasicGame Class BasicGame = {
- *  };
- *  // create Game function in BasicGame BasicGame.Game = function (game) { };
- * 
- * 
- * var player; var platforms; var cursors; var stars; var score = 0; var
- * scoreText;
- *  // set Game function prototype BasicGame.Game.prototype = {
- * 
- * init: function () { // set up input max pointers this.input.maxPointers = 1; //
- * set up stage disable visibility change this.stage.disableVisibilityChange =
- * true; // Set up the scaling method used by the ScaleManager // Valid values
- * for scaleMode are: // * EXACT_FIT // * NO_SCALE // * SHOW_ALL // * RESIZE //
- * See http://docs.phaser.io/Phaser.ScaleManager.html for full document
- * this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; // If you wish to align
- * your game in the middle of the page then you can // set this value to true.
- * It will place a re-calculated margin-left // pixel value onto the canvas
- * element which is updated on orientation / // resizing events. It doesn't care
- * about any other DOM element that may // be on the page, it literally just
- * sets the margin. this.scale.pageAlignHorizontally = true;
- * this.scale.pageAlignVertically = true; // Force the orientation in landscape
- * or portrait. // * Set first to true to force landscape. // * Set second to
- * true to force portrait. this.scale.forceOrientation(true, false); // Sets the
- * callback that will be called when the window resize event // occurs, or if
- * set the parent container changes dimensions. Use this // to handle responsive
- * game layout options. Note that the callback will // only be called if the
- * ScaleManager.scaleMode is set to RESIZE.
- * this.scale.setResizeCallback(this.gameResized, this); // Set screen size
- * automatically based on the scaleMode. This is only // needed if ScaleMode is
- * not set to RESIZE. this.scale.setScreenSize(true); // Re-calculate scale mode
- * and update screen size. This only applies if // ScaleMode is not set to
- * RESIZE. this.scale.refresh();
- *  },
- * 
- * 
- * preload: function () {
- *  // Here we load the assets required for our preloader (in this case a //
- * background and a loading bar) //this.load.image('logo', 'asset/phaser.png');
- * this.load.image('sky','asset/sky.png');
- * this.load.image('ground','asset/platform.png');
- * this.load.image('star','asset/star.png');
- * this.load.spritesheet('dude','asset/dude.png', 32, 48); },
- * 
- * create: function () { this.physics.startSystem(Phaser.Physics.ARCADE);
- * this.sky = this.add.sprite(0,0, 'sky'); this.sky.scale.setTo(4,1);
- * 
- * platforms = this.add.group();
- * 
- * platforms.enableBody = true;
- * 
- * var ground = platforms.create(0, this.world.height - 64, 'ground');
- * ground.scale.setTo(5,2); ground.body.immovable = true; var ledge =
- * platforms.create(400,300, 'ground'); ledge.body.immovable = true;
- * 
- * ledge = platforms.create(-150, 250, 'ground');
- * 
- * ledge.body.immovable = true;
- *  // Add logo to the center of the stage //this.logo = this.add.sprite( //
- * this.world.centerX, // (centerX, centerY) is the center coordination //
- * this.world.centerY, // 'logo'); //this.star = this.add.sprite(0,0, 'star'); //
- * Set the anchor to the center of the sprite //this.logo.anchor.setTo(0.5,
- * 0.5);
- * 
- *  // The player and its settings player = this.add.sprite(32,
- * this.world.height - 150, 'dude');
- *  // We need to enable physics on the player
- * this.physics.arcade.enable(player);
- *  // Player physics properties. Give the little guy a slight bounce.
- * player.body.bounce.y = 0.2; player.body.gravity.y = 300;
- * player.body.collideWorldBounds = true;
- *  // Our two animations, walking left and right. player.animations.add('left',
- * [0, 1, 2, 3], 10, true); player.animations.add('right', [5, 6, 7, 8], 10,
- * true);
- * 
- * stars = this.add.group(); stars.enableBody = true;
- * 
- * for(var i = 0; i < 12; i++){ var star = stars.create(i * 70, 0, 'star');
- * star.body.gravity.y = 200; star.body.bounce.y = 0.3 + Math.random() * 0.2; }
- * 
- * scoreText = this.add.text(16,16, 'score: 0', { fontSize: '32px', fill:
- * '#000'});
- * 
- * 
- * cursors = this.input.keyboard.createCursorKeys();
- *  },
- * 
- * update: function () { this.physics.arcade.collide(player, platforms);
- * this.physics.arcade.collide(stars, platforms);
- * this.physics.arcade.overlap(player, stars, this.collectStar, null, this);
- *  // Reset the players velocity (movement) player.body.velocity.x = 0;
- * 
- * if (cursors.left.isDown) { // Move to the left player.body.velocity.x = -150;
- * 
- * player.animations.play('left'); } else if (cursors.right.isDown) { // Move to
- * the right player.body.velocity.x = 150;
- * 
- * player.animations.play('right'); } else { // Stand still
- * player.animations.stop();
- * 
- * player.frame = 4; }
- *  // Allow the player to jump if they are touching the ground. if
- * (cursors.up.isDown && player.body.touching.down) { player.body.velocity.y =
- * -275; } },
- * 
- * 
- * 
- * collectStar: function (player, star){ star.kill(); score += Number.MAX_VALUE;
- * scoreText.text = 'Score: ' + score; },
- * 
- * gameResized: function (width, height) {
- *  // This could be handy if you need to do any extra processing if the // game
- * resizes. A resize could happen if for example swapping // orientation on a
- * device or resizing the browser window. Note that // this callback is only
- * really useful if you use a ScaleMode of RESIZE // and place it inside your
- * main game state.
- *  }
- * 
- *  };
- */
