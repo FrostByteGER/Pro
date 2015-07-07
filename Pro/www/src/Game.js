@@ -73,9 +73,11 @@ ProShooter.Game.prototype = {
 		this.bulletspeed = 500;
 		this.bulletspred = 2;
 		this.bulletpershoot = 1;
-
 		this.bulletxp = 0;
-
+		
+		this.playerShootAngleY = 0;
+		this.playerShootAngleX = 0;
+		
 		this.fireButton = this.game.input.keyboard
 				.addKey(Phaser.Keyboard.SPACEBAR);
 	},
@@ -90,40 +92,69 @@ ProShooter.Game.prototype = {
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;
 
-		if (this.cursors.left.isDown || this.wasd.left.isDown) {
+		if (this.wasd.left.isDown) {
+			
+			// this.cursors.left.isDown
 			// Move to the left
 			this.player.body.velocity.x = -this.player.speedx;
 
 			this.player.animations.play('left');
 			this.direction = -1;
-
-		} else if (this.cursors.right.isDown || this.wasd.right.isDown) {
+			this.playerShootAngleX = -1;
+		} else if (this.wasd.right.isDown) {
+			
+			// this.cursors.right.isDown
 			// Move to the right
 			this.player.body.velocity.x = this.player.speedx;
 
 			this.player.animations.play('right');
 			this.direction = 1;
+			this.playerShootAngleX = 1;
 		} else if (this.player.body.velocity.x == 0
 				|| this.player.body.velocity.y == 0
 				&& this.player.body.touching.down) {
 			// Stand still
+			
 			this.player.animations.stop();
 			if (this.direction == -1) {
-				this.player.frame = 1;
+				this.player.frame = 1;			
 			} else if (this.direction == 1) {
 				this.player.frame = 0;
 			}
 		}
-
-		if ((this.cursors.up.isDown || this.wasd.up.isDown)
+		
+		// this.cursors.up.isDown
+		if ((this.wasd.up.isDown)
 				&& this.player.body.touching.down) {
 			this.player.body.velocity.y = this.player.speedy;
 
 		}
-
-		if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
+		
+		if(this.cursors.up.isDown){
+			this.playerShootAngleY = -1;
+		}else if(this.cursors.down.isDown){
+			this.playerShootAngleY = 1;
+		}else{
+			this.playerShootAngleY = 0;
+		}
+		
+		if(this.cursors.left.isDown){
+			this.playerShootAngleX = -1;
+		}else if(this.cursors.right.isDown){
+			this.playerShootAngleX = 1;
+		}else{
+			this.playerShootAngleX = 0;
+		}
+		
+		if(this.playerShootAngleX == 0 && this.playerShootAngleY == 0){
+			this.playerShootAngleX = this.direction;
+		}
+		
+		// this.game.input.activePointer.isDown
+		
+		if (this.fireButton.isDown) {
 			// Grab the first bullet we can from the pool
-
+			/*
 			if (this.game.input.mousePointer.x + this.game.camera.x < this.playermidx) {
 				if (this.direction == 1) {
 					this.direction = -1;
@@ -133,7 +164,7 @@ ProShooter.Game.prototype = {
 					this.direction = 1;
 				}
 			}
-
+			*/
 			if (this.shootcooldown == 0) {
 				for (var i = 0; i < this.bulletpershoot; i++) {
 					this.fireBulletPlayer();
@@ -160,7 +191,8 @@ ProShooter.Game.prototype = {
 		this.game.debug.text("Player X: " + this.player.x + 25
 				+ "   Player Y: " + this.player.y + 25 || '--', 20, 200,
 				"#00ff00", "20px Courier");
-
+		this.game.debug.text(this.playerShootAngleX+" "+this.playerShootAngleY || '--', 20, 230,
+				"#00ff00", "20px Courier");
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -171,7 +203,7 @@ ProShooter.Game.prototype = {
 				+ (this.game.rnd.integerInRange(-bulletSpread, bulletSpread) / 100);
 
 		if (bullet) {
-			if (scrIntx < endIntx) {
+			if (scrIntx <= endIntx) {
 				// right
 				// And fire it
 				bullet.reset(this.player.x + 42, this.player.y + 27);
@@ -202,12 +234,12 @@ ProShooter.Game.prototype = {
 		this.mousy = this.game.input.mousePointer.y;
 
 		if (this.direction == -1) {
-			this.fireBullet(this.player.x + 10, this.player.y + 27, this.mousx,
-					this.mousy, this.bullets, this.bulletspred,
+			this.fireBullet(this.player.x + 10, this.player.y + 27,this.player.x + 10 + this.playerShootAngleX,
+					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed);
 		} else {
-			this.fireBullet(this.player.x + 42, this.player.y + 27, this.mousx,
-					this.mousy, this.bullets, this.bulletspred,
+			this.fireBullet(this.player.x + 42, this.player.y + 27, this.player.x + 42 + this.playerShootAngleX,
+					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed);
 		}
 	},
