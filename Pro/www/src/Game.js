@@ -36,7 +36,7 @@ ProShooter.Game.prototype = {
 		this.map.addTilesetImage('grass','grass');
 		this.backgroundlayer = this.map.createLayer('Background');
 		this.surfacelayer = this.map.createLayer('Surface');
-		this.buildingslayer = this.map.createLayer('Buildings');
+		//this.buildingslayer = this.map.createLayer('Buildings');
 		
 		this.map.setCollisionBetween(1, 2500, true, 'Surface');
 		this.backgroundlayer.resizeWorld();
