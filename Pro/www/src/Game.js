@@ -17,7 +17,7 @@ ProShooter.Game.prototype = {
 		this.boundsXmax = 1600;
 		this.boundsXmin = 0;
 		
-		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
+		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 600);
 		
 		// Map
 		this.map = this.add.group();
@@ -204,18 +204,24 @@ ProShooter.Game.prototype = {
 			this.addRandomPlatform();
 		}
 		
-		if(this.player.x+1000 > this.boundsXmax){
+		if(this.player.x+800 > this.boundsXmax){
 			this.map.x = this.player.x-800;
 			this.boundsXmax = this.player.x+1600;
-			this.boundsXmin = this.player.y-1600;
+			this.boundsXmin = this.player.x-800;
 			if(this.boundsXmin < 0){
 				this.boundsXmin = 0;
 			}
-			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
-		}
-		
-
-		
+			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 600);
+			
+			for(var i = 0 ; i < this.platforms.length ; i++){
+				var tile = this.platforms.children[i];
+				
+				if(tile.x < this.boundsXmin){
+					tile.kill;
+					this.platforms.remove(tile);
+				}
+			}
+		}	
 	},
 
 	render : function()
