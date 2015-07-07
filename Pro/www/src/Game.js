@@ -488,7 +488,7 @@ ProShooter.Game.prototype = {
 		var boss = this.bosse.create(position.x, position.y, 'boss');	
 		boss.health = 100;
 		boss.name = name;
-		boss.anchor.setTo(.5, 1);
+		boss.anchor.setTo(.5, 0.8);
 		boss.spawnposition = position;
 	}
 };
