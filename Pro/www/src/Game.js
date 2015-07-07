@@ -77,6 +77,14 @@ ProShooter.Game.prototype = {
 		this.bullets.setAll('anchor.y', 1);
 		this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
+		this.enemybullets = this.game.add.group();
+		this.enemybullets.enableBody = true;
+		this.enemybullets.physicsBodyType = Phaser.Physics.ARCADE;
+		this.enemybullets.createMultiple(50, 'bullet');
+		this.enemybullets.setAll('anchor.x', 0.5);
+		this.enemybullets.setAll('anchor.y', 1);
+		this.enemybullets.setAll('outOfBoundsKill', true);
+		this.enemybullets.setAll('checkWorldBounds', true);
 
 		this.shootspeed = 5;
 		this.shootcooldown = 0;
@@ -111,6 +119,20 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.collide(this.player, this.ground);
 		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
+		
+		for(var i = 0; i < this.mobs.length; i++){
+			var enemy = this.mobs.getAt(i);
+			if(enemy.inCamera){
+				var x = 0;
+				if(enemy.direction == 'left'){
+					x = -1;
+				}else{
+					x = 1;
+				}
+				this.fireBullet(enemy.x, enemy.y, enemy.x + x, enemy.y, this.enemybullets, 2, 300);
+			}
+		}
+
 
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;		
