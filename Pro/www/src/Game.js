@@ -297,18 +297,28 @@ ProShooter.Game.prototype = {
 	
 	addRandomPlatform : function(){
 		
-		// this.lastPlatformX+this.game.rnd.integerInRange(0,0)+
 		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+this.game.rnd.integerInRange(0,200);
 		
 		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-50,50);
 		
 		this.platformsize = this.game.rnd.integerInRange(5,10);
 		
-		if(this.lastPlatformY < 200){
+		if(this.lastPlatformY < 100){
 			this.lastPlatformY = 200+this.lastPlatformY+this.game.rnd.integerInRange(0,50);
 		}
-		if(this.lastPlatformY > this.world.height - 128){
-			this.lastPlatformY = this.world.height-128;
+		if(this.lastPlatformY > this.world.height - 50){
+			this.lastPlatformY = this.world.height-50;
+		}
+		
+		if(this.game.rnd.integerInRange(0,50) > 45){
+			
+			this.platformsize = this.game.rnd.integerInRange(5,10)+10;
+			
+			
+			temp = {};
+			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
+			temp.y = this.lastPlatformY;
+			this.spawnMob(temp, 'alien', 1, 100, ((this.platformsize+1)*8)-70);
 		}
 		
 		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.platformsize);
