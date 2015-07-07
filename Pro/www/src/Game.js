@@ -14,9 +14,15 @@ ProShooter.Game.prototype = {
 
 	create : function() {
 		
+		// redWall
+		
+		this.redWallSpeed = 2;
+		this.redWallbuffer = 50;
+		this.redWallX = -this.redWallbuffer;
+		
+		
 		this.boundsXmax = 1600;
 		this.boundsXmin = 0;
-		
 		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 600);
 		
 		// Map
@@ -68,7 +74,6 @@ ProShooter.Game.prototype = {
 		this.direction = 1;
 
 		// shoot
-
 		this.bullets = this.game.add.group();
 		this.bullets.enableBody = true;
 		this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
@@ -98,14 +103,13 @@ ProShooter.Game.prototype = {
 		
 		this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		
+		// mobs
 		this.mobs = this.add.group();
 		
 		this.mobs.enableBody = true;
 		this.mobs.physicsBodyType = Phaser.Physics.ARCADE;
-		/*
-		for(var i = 0; i < 5; i++){
-			this.spawnMob({x:400 + i*200,y:290}, 'alien', 10, 100, 120);
-		}*/
+		
+		this.pickups = this.game.add.group();
 	    //music.play();
 
 	},
@@ -230,21 +234,26 @@ ProShooter.Game.prototype = {
 				this.boundsXmin = 0;
 			}
 			this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 600);
+		}
+		
+		if(this.redWallX < this.boundsXmin-this.redWallbuffer){
+			this.redWallX = this.boundsXmin-this.redWallbuffer;
+		}
+		
+		for(var i = 0 ; i < this.platforms.length ; i++){
+			var tile = this.platforms.children[i];
 			
-			for(var i = 0 ; i < this.platforms.length ; i++){
-				var tile = this.platforms.children[i];
-				
-				if(tile.x < this.boundsXmin){
-					tile.kill;
-					this.platforms.remove(tile);
-				}
+			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				this.platforms.remove(tile);
+				tile.kill;
 			}
-		}	
+		}
+		
+		this.redWallX += this.redWallSpeed;
+		
 	},
 
-	render : function()
-	
-	{
+	render : function(){
 		//this.game.debug.body(this.player);
 		for(var i = 0; i < this.mobs.countLiving(); i++){
 			//this.game.debug.body(this.mobs.getAt(i));
@@ -273,14 +282,14 @@ ProShooter.Game.prototype = {
 			if (scrIntx <= endIntx) {
 				// right
 				// And fire it
-				bullet.reset(this.player.x + 42, this.player.y + 27);
+				bullet.reset(scrIntx, scrInty);
 				// bullet.reset(this.player.x, this.player.y);
 				this.game.physics.arcade.velocityFromRotation(this.bulletangle,
 						bulletSpeed, bullet.body.velocity);
 				bullet.rotation = this.bulletangle;
 			} else {
 				// And fire it
-				bullet.reset(this.player.x + 10, this.player.y + 27);
+				bullet.reset(scrIntx, scrInty);
 				// bullet.reset(this.player.x, this.player.y);
 
 				this.game.physics.arcade.velocityFromRotation(this.bulletangle, -bulletSpeed, bullet.body.velocity);
