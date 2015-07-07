@@ -55,6 +55,9 @@ ProShooter.Game.prototype = {
 		this.addPlatform(500,200,5);
 		this.addPlatform(400,100,5);
 		
+		this.lastPlatformY = 100;
+		this.lastPlatformX = 400;
+		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
 			up : this.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -186,6 +189,11 @@ ProShooter.Game.prototype = {
 		if (this.shootcooldown > 0) {
 			this.shootcooldown--;
 		}
+		
+		if(this.lastPlatformX-400 < this.player.x){
+			this.addRandomPlatform();
+		}
+		
 	},
 
 	render : function()
@@ -283,7 +291,19 @@ ProShooter.Game.prototype = {
 	
 	addRandomPlatform : function(){
 		
-		addPlatform(this.player+this.player.width,this.player+height,this.game.rnd.integerInRange(0,7));
+		this.lastPlatformX = this.lastPlatformX+this.game.rnd.integerInRange(100,300);
+		
+		this.lastPlatformY = this.lastPlatformY+this.game.rnd.integerInRange(-150,150);
+		
+		if(this.lastPlatformY < 60){
+			this.lastPlatformY = 60;
+		}
+		if(this.lastPlatformY > this.world.height-60){
+			this.lastPlatformY = this.world.height-60;
+		}
+		
+		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.game.rnd.integerInRange(1,7));
+
 		
 	},
 
