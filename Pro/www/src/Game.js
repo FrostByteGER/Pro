@@ -20,10 +20,13 @@ ProShooter.Game.prototype = {
 		this.game.world.setBounds(this.boundsXmin, 0, this.boundsXmax, 352);
 		
 		// Map
-		this.map = this.game.add.sprite(0, 0, 'map');
+		this.map = this.add.group();
+		this.map.create(0,0, 'background');
+		this.map.create(0,0, 'buildings')
+		this.game.add.sprite(0, 0, 'map');
 
 		// create player
-		this.player = this.game.add.sprite(100, 300, 'player');
+		//this.player = this.game.add.sprite(100, 300, 'player');
 
 		this.player = this.add.sprite(32, this.world.height - 150, 'dude');
 		this.game.physics.arcade.enable(this.player);
@@ -112,11 +115,10 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.collide(this.mobs, this.platforms);
 
 		// Reset the players velocity (movement)
-		this.player.body.velocity.x = 0;
-
+		this.player.body.velocity.x = 0;		
 		if (this.wasd.left.isDown) {
 			this.player.body.velocity.x = -this.player.speedx;
-
+			
 			this.player.animations.play('left');
 			this.direction = -1;
 			this.playerShootAngleX = -1;
