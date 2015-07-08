@@ -341,7 +341,7 @@ ProShooter.Game.prototype = {
 			this.shootcooldown--;
 		}
 	
-		if(this.lastPlatformX-2000 < this.game.camera.x){
+		if(this.lastPlatformX-1500 < this.game.camera.x){
 			this.addRandomPlatform();
 		}
 		
@@ -543,8 +543,8 @@ ProShooter.Game.prototype = {
 		
 		this.platformsize = this.game.rnd.integerInRange(3,5);
 		
-		if(this.lastPlatformY < 150){
-			this.lastPlatformY = 150+this.game.rnd.integerInRange(-50,50);
+		if(this.lastPlatformY < 250){
+			this.lastPlatformY = 250+this.game.rnd.integerInRange(0,50);
 		}
 		if(this.lastPlatformY > this.world.height - 70){
 			this.lastPlatformY = this.world.height-70-this.game.rnd.integerInRange(0,50);
@@ -819,6 +819,15 @@ ProShooter.Game.prototype = {
 				this.music_heavy.stop();
 				this.bossmusic1.play();
 			}else{
+				this.enemyamount = 80;
+				this.redWallSpeed = 2;
+				this.modus = to;
+				this.obstacleamount = 90;
+				this.music_heavy.play();
+				this.bossmusic1.stop();
+				this.music.stop();
+				this.platformSizeMax = 9;
+				this.platformSizeMin = 6;
 				this.music_heavy.stop();
 				this.bossmusic1.stop();
 				this.music.play();
