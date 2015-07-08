@@ -177,12 +177,12 @@ ProShooter.Game.prototype = {
 		this.pickups.setAll('checkWorldBounds', true);
 
 	    //music.play();
-		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 48);
+		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 38);
 		this.uiText.fixedToCamera = true;
 	},
 
 	update : function() {
-		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001));
+		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001) + '    Medikits: ' + this.player.medikits);
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.overlap(this.player, this.obstacles, this.touchSpike, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
