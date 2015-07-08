@@ -31,12 +31,18 @@ ProShooter.Game.prototype = {
 
 	create : function() {
 		
-		// redWall
+		// Modus
+		this.modus = 0;
+		this.modusRush = 1;
+		this.modusBoss = 2;
+		this.modusChalange = 3;
 		
+		this.enemyamount = 20; 
+		
+		// redWall
 		this.redWallSpeed = 2;
 		this.redWallbuffer = 250;
 		this.redWallX = -this.redWallbuffer;
-		
 		
 		this.boundsXmax = 1600;
 		this.boundsXmin = 0;
@@ -317,26 +323,21 @@ ProShooter.Game.prototype = {
 				boss.x += boss.x/(this.player.x-500)/10;
 			}
 			
-			/*
-			
-			if(boss.x < this.game.camera.x){
-				boss.x -= this.game.camera.x/boss.x/10;
-			}else if(boss.x > this.game.camera.x){
-				boss.x += boss.x/this.game.camera.x/10;
-			}
-			*/
 			if(boss.y < this.player.y){
 				boss.y += this.player.y/boss.y;
 			}else if(boss.y > this.player.y){
 				boss.y -= boss.y/this.player.y;
 			}
-			/*
-			if(boss.y > this.player.y){
-				boss.y--;
-			}else if(boss.y < this.player.y){
-				boss.y++;
+			
+			if(boss.cooldown == 0){
+				for(var i = 0 ;i < boss.bulletspershoot ; i++){
+					this.fireBullet(boss.x, boss.y, this.player.x, this.player.y, this.enemybullets, boss.bulletSpread, boss.bulletSpeed, this.lasersfx2);
+				}
+				boss.cooldown = boss.maxcooldown;
+			}else{
+				boss.cooldown--;
 			}
-			*/
+			
 		}
 		
 		this.redWallX += this.redWallSpeed;
@@ -575,6 +576,11 @@ ProShooter.Game.prototype = {
 		var boss = this.bosse.create(position.x, position.y, 'boss');	
 		boss.health = 100;
 		boss.name = name;
+		boss.bulletSpeed = 600;
+		boss.maxcooldown = 200;
+		boss.cooldown = boss.maxcooldown;
+		boss.bulletSpread = 5;
+		boss.bulletspershoot = 5;
 		boss.anchor.setTo(.5, 0.8);
 		boss.spawnposition = position;
 	}
