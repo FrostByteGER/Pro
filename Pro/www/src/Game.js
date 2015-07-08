@@ -90,7 +90,6 @@ ProShooter.Game.prototype = {
 		// obstacles
 		this.obstacles = this.add.group();
 		this.obstacles.enableBody = true;
-		this.obstacles.setAll('damage', 10);
 		
 		this.obstacleamount = 90;
 		
@@ -383,23 +382,15 @@ ProShooter.Game.prototype = {
 		this.bullets.forEachAlive(function(bullet) {
 		    if(bullet.x > this.game.camera.x + this.game.camera.width){
 		    	this.collectBullet(bullet);
-		    	this.bullets.remove(bullet);
-		    	bullet.destroy();
 		    }else if(bullet.x < this.game.camera.x){
 		    	this.collectBullet(bullet);
-		    	this.bullets.remove(bullet);
-		    	bullet.destroy();
 		    }
 		  },this);
 		this.enemybullets.forEachAlive(function(bullet) {
 		    if(bullet.x > this.game.camera.x + this.game.camera.width){
 		    	this.collectBullet(bullet);
-		    	this.enemybullets.remove(bullet);
-		    	bullet.destroy();
 		    }else if(bullet.x < this.game.camera.x){
 		    	this.collectBullet(bullet);
-		    	this.enemybullets.remove(bullet);
-		    	bullet.destroy();
 		    }
 		  },this);
 	},
@@ -427,7 +418,7 @@ ProShooter.Game.prototype = {
 				+ (this.game.rnd.integerInRange(-bulletSpread, bulletSpread) / 100);
 
 		if (bullet) {
-			bullet.parentSprite = parent;
+			bullet.damage = parent.damage;
 			sfx.play();
 			if (scrIntx <= endIntx) {
 				// right
@@ -545,10 +536,12 @@ ProShooter.Game.prototype = {
 	
 	addObstacles :function(intx,inty){
 		var spike = this.obstacles.create(intx,inty, 'spike');
+		spike.damage = 10;
 		spike.body.immovable = true;
 	},
 	
 	touchSpike : function(player, source){
+		this.player.body.velocity.y = this.player.speedy;
 		this.damagePlayer(player, source);
 	},
 	
@@ -593,7 +586,7 @@ ProShooter.Game.prototype = {
 	
 	damagePlayer : function(player, source) {
 		if(player.health > 0){
-			player.health -= source.parentSprite.damage;
+			player.health -= source.damage;
 			player.sfx.play();
 			if(player.health <= 0){
 				player.kill();
@@ -610,7 +603,7 @@ ProShooter.Game.prototype = {
 	hitMob : function(mob, source) {
 		this.collectBullet(source);
 		if(mob.health > 0){
-			mob.health -= source.parentSprite.damage;
+			mob.health -= source.damage;
 			mob.sfx.play();
 			if(mob.health <= 0){
 				mob.kill();
@@ -684,7 +677,7 @@ ProShooter.Game.prototype = {
 	hitBoss : function(boss, source){
 		this.collectBullet(source);
 		if(boss.health > 0){
-			boss.health -= source.parentSprite.damage;
+			boss.health -= source.damage;
 			boss.sfx.play();
 			if(boss.health <= 0){
 				boss.alive = false;
