@@ -67,6 +67,7 @@ ProShooter.Game.prototype = {
 
 		// Player Movementspeed
 		this.player.speedx = 300;
+		this.player.hitxSpeed = 0;
 		this.player.speedy = -475;
 		this.player.health = 100;
 		this.player.medikits = 1;
@@ -197,19 +198,18 @@ ProShooter.Game.prototype = {
 			this.collectBullet(source);
 		}, null, this);
 		this.physics.arcade.overlap(this.enemybullets, this.platforms, this.collectBullet, null, this);
-		this.physics.arcade.collide(this.player, this.platforms);
-		this.physics.arcade.collide(this.player, this.ground);
-		this.physics.arcade.overlap(this.player, this.mobs,function(player) {
-			player.health = 0;
-		    player.kill();
-		    this.endGame();
+		this.physics.arcade.collide(this.player, this.platforms,function(player, source) {
+			player.hitxSpeed = 0;
 		  }, null, this);
+
+		this.physics.arcade.overlap(this.player, this.mobs,this.touchSpike, null, this);
 		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
 		this.physics.arcade.collide(this.pickups, this.platforms);
 		
 		
-		this.mobs.forEachAlive(function(enemy){
+		for (var i = 0; i < this.mobs.children.length; i++) {
+			var enemy = this.mobs.children[i];
 			if(enemy.inCamera){
 				if (enemy.fireCooldown == 0) {
 					for (var i = 0; i < enemy.bulletsPerSalve; i++) {
@@ -233,8 +233,21 @@ ProShooter.Game.prototype = {
 				if (enemy.fireCooldown > 0) {
 					enemy.fireCooldown--;
 				}
-			}		
-		});
+			}
+			if(enemy.direction == 'right' && enemy.x <= enemy.range + enemy.spawnposition.x){
+				enemy.x += enemy.speed;
+			}else if(enemy.direction == 'right'){
+				enemy.direction = 'left';
+				enemy.scale.x *= -1;
+			}
+			
+			if(enemy.direction == 'left' && enemy.x >= enemy.spawnposition.x - enemy.range){
+				enemy.x -= enemy.speed;
+			}else if(enemy.direction == 'left'){
+				enemy.direction = 'right';
+				enemy.scale.x *= -1;
+			}
+		}
 			
 		/*for(var i = 0; i < this.mobs.length; i++){
 			var mob = this.mobs.getAt(i);
@@ -249,9 +262,9 @@ ProShooter.Game.prototype = {
 		}
 
 		// Reset the players velocity (movement)
-		this.player.body.velocity.x = 0;		
+		this.player.body.velocity.x = this.player.hitxSpeed;		
 		if (this.wasd.left.isDown) {
-			this.player.body.velocity.x = -this.player.speedx;
+			this.player.body.velocity.x = -this.player.speedx + this.player.hitxSpeed;
 			
 			this.player.animations.play('walk_normal');
 			this.direction = -1;
@@ -259,7 +272,7 @@ ProShooter.Game.prototype = {
 			this.playerShootAngleX = -1;
 		} else if (this.wasd.right.isDown) {
 			
-			this.player.body.velocity.x = this.player.speedx;
+			this.player.body.velocity.x = this.player.speedx + this.player.hitxSpeed;
 
 			this.player.animations.play('walk_normal');
 			this.direction = 1;
@@ -267,8 +280,8 @@ ProShooter.Game.prototype = {
 			this.playerShootAngleX = 1;
 		} else if (this.player.body.velocity.x == 0
 				|| this.player.body.velocity.y == 0
+				
 				&& this.player.body.touching.down) {
-			
 			this.player.animations.stop();
 			if (this.direction == -1) {
 				this.player.frame = 0;		
@@ -323,23 +336,6 @@ ProShooter.Game.prototype = {
 		if (this.shootcooldown > 0) {
 			this.shootcooldown--;
 		}
-		
-		this.mobs.forEachAlive(function(mob){
-				if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
-					mob.x += mob.speed;
-				}else if(mob.direction == 'right'){
-					mob.direction = 'left';
-					mob.scale.x *= -1;
-				}
-				
-				if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
-					mob.x -= mob.speed;
-				}else if(mob.direction == 'left'){
-					mob.direction = 'right';
-					mob.scale.x *= -1;
-				}
-		});
-
 	
 		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
@@ -396,7 +392,8 @@ ProShooter.Game.prototype = {
 			}
 		}
 		
-		this.bosse.forEachAlive(function(boss){
+		for (var i = 0; i < this.bosse.children.length; i++) {
+			var boss = this.bosse.children[i];
 			boss.x = this.game.camera.x;
 			
 			if(boss.x < this.player.x-500){
@@ -419,7 +416,7 @@ ProShooter.Game.prototype = {
 			}else{
 				boss.cooldown--;
 			}
-		});
+		}
 		
 		this.redWallX += this.redWallSpeed;
 		
@@ -432,21 +429,25 @@ ProShooter.Game.prototype = {
 		
 		this.mobs.forEachDead(function(mob) {
 		    mob.destroy();
-		  },this);
-		this.bullets.forEachAlive(function(bullet) {
+		  });
+		
+		for (var i = 0; i < this.bullets.children.length; i++) {
+			var bullet = this.bullets.children[i];
 		    if(bullet.x > this.game.camera.x + this.game.camera.width){
 		    	this.collectBullet(bullet);
 		    }else if(bullet.x < this.game.camera.x){
 		    	this.collectBullet(bullet);
 		    }
-		  },this);
-		this.enemybullets.forEachAlive(function(bullet) {
+		  }
+
+		for (var i = 0; i < this.enemybullets.children.length; i++) {
+				var bullet = this.bullets.children[i];
 		    if(bullet.x > this.game.camera.x + this.game.camera.width){
 		    	this.collectBullet(bullet);
 		    }else if(bullet.x < this.game.camera.x){
 		    	this.collectBullet(bullet);
 		    }
-		  },this);
+		}
 	},
 
 	render : function(){
@@ -589,7 +590,13 @@ ProShooter.Game.prototype = {
 	},
 	
 	touchSpike : function(player, source){
-		this.player.body.velocity.y = this.player.speedy;
+	    if(source.x < player.x){
+	    	player.hitxSpeed = player.speedx/2;
+	    	player.body.velocity.y = player.speedy/2;
+	    }else{
+	    	player.hitxSpeed = -player.speedx/2;
+	    	player.body.velocity.y = player.speedy/2;
+	    }
 		this.damagePlayer(player, source);
 	},
 	
