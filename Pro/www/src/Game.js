@@ -26,8 +26,6 @@ ProShooter.Game.prototype = {
 		this.music.loop = true;
 		this.music.volume = 0.12;
 		this.music.play();
-		
-		
 	},
 
 	create : function() {
@@ -109,7 +107,7 @@ ProShooter.Game.prototype = {
 		this.bullets.createMultiple(60, 'bullet');
 		this.bullets.setAll('anchor.x', 0.5);
 		this.bullets.setAll('anchor.y', 1);
-		this.bullets.setAll('outOfBoundsKill', true);
+		//this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
 		this.enemybullets = this.game.add.group();
 		this.enemybullets.enableBody = true;
@@ -117,8 +115,9 @@ ProShooter.Game.prototype = {
 		this.enemybullets.createMultiple(25, 'laserbullet');
 		this.enemybullets.setAll('anchor.x', 0.5);
 		this.enemybullets.setAll('anchor.y', 1);
-		this.enemybullets.setAll('outOfBoundsKill', true);
+		//this.enemybullets.setAll('outOfBoundsKill', true);
 		this.enemybullets.setAll('checkWorldBounds', true);
+		this.enemybullets.setAll('damage',5);
 
 		this.shootspeed = 5;
 		this.shootcooldown = 0;
@@ -161,14 +160,14 @@ ProShooter.Game.prototype = {
 
 		
 	    //music.play();
-		this.uiText = this.game.add.bitmapText(50, 100,'mainfont', 'Health: ', 48);
+		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 48);
 		this.uiText.fixedToCamera = true;
 	},
 
 	update : function() {
-		this.uiText.setText('Health: ' + this.player.health + ' Score: ' + this.player.score + ' Time: ');
+		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001));
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
-		this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
+		//this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
 		this.physics.arcade.overlap(this.bosse, this.bullets, this.hitBoss, null, this);
 		this.physics.arcade.overlap(this.pickups, this.player, this.pickpuSomething, null, this);
@@ -176,6 +175,11 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.overlap(this.enemybullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.collide(this.player, this.platforms);
 		this.physics.arcade.collide(this.player, this.ground);
+		this.physics.arcade.overlap(this.player, this.mobs,function(player) {
+			player.health = 0;
+		    player.kill();
+		    this.restartGame();
+		  }, null, this);
 		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
 		this.physics.arcade.collide(this.pickups, this.platforms);
@@ -359,6 +363,20 @@ ProShooter.Game.prototype = {
 		this.mobs.forEachDead(function(mob) {
 		    mob.destroy();
 		  },this);
+		this.bullets.forEachAlive(function(bullet) {
+		    if(bullet.x > this.game.camera.x + this.game.camera.width){
+		    	this.collectBullet(bullet);
+		    	this.bullets.remove(bullet);
+		    	bullet.destroy();
+		    }
+		  },this);
+		this.enemybullets.forEachAlive(function(bullet) {
+		    if(bullet.x > this.game.camera.x + this.game.camera.width){
+		    	this.collectBullet(bullet);
+		    	this.enemybullets.remove(bullet);
+		    	bullet.destroy();
+		    }
+		  },this);
 	},
 
 	render : function(){
@@ -366,6 +384,7 @@ ProShooter.Game.prototype = {
 		for(var i = 0; i < this.mobs.countLiving(); i++){
 			//this.game.debug.body(this.mobs.getAt(i));
 		}
+		this.game.debug.text(this.bullets.getAt(0).x + ' ' + this.game.camera.x + this.game.camera.width, 20, 120, "#00ff00", "40px Courier");
 		this.game.debug.cameraInfo(this.game.camera, 550, 32);
 		this.game.debug.text("FPS: " + this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
 		
@@ -527,7 +546,7 @@ ProShooter.Game.prototype = {
 	
 	damagePlayer : function(player, source) {
 		if(player.health > 0){
-			player.health -= source.damage;
+			player.health -= 5;
 			player.sfx.play();
 			if(player.health <= 0){
 				player.kill();
@@ -537,7 +556,9 @@ ProShooter.Game.prototype = {
 			player.kill();
 			player.deathsfx.play();
 			//player.destroy(true);
+			this.restartGame();
 		}
+		this.collectBullet(source);
 	},
 	
 	hitMob : function(mob, source) {
@@ -547,6 +568,7 @@ ProShooter.Game.prototype = {
 			mob.sfx.play();
 			if(mob.health <= 0){
 				mob.kill();
+				this.player.score += mob.points;
 				this.suicidesfx.play();
 				//mob.deathsfx.play();
 			}
@@ -635,5 +657,13 @@ ProShooter.Game.prototype = {
 				
 			}
 		}	
+	},
+	
+	shutdown: function(game) {
+		this.music.stop();
+	},
+	
+	restartGame : function(){
+		this.state.restart();
 	}
 };
