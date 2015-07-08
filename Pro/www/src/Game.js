@@ -15,14 +15,20 @@ ProShooter.Game.prototype = {
 		}else{
 			this.music = this.game.add.audio('action3');
 		}
+		this.music_heavy = this.game.add.audio('actionheavy1');
+		this.music_heavy.volume = 0.2;
+		this.music_heavy.loop = true;
 		this.damagesfx = this.game.add.audio('damage');
 		this.damagesfx.volume  = 0.2;
 		this.lasersfx1 = this.game.add.audio('laserbullet1');
 		this.lasersfx1.volume = 0.05;
 		this.lasersfx2 = this.game.add.audio('laserbullet2');
 		this.lasersfx2.volume = 0.2;
-		this.suicidesfx = this.game.add.audio('suicide');
-		this.suicidesfx.volume = 2.0;
+		this.heal = this.game.add.audio('heal');
+		this.heal.volume = 0.3;
+		this.bossmusic1 = this.game.add.audio('boss1');
+		this.bossmusic1.loop = true;
+		this.bossmusic1.volume = 0.2;
 		this.music.loop = true;
 		this.music.volume = 0.12;
 		this.music.play();
@@ -39,7 +45,7 @@ ProShooter.Game.prototype = {
 		this.modeTime = this.time.now;
 		this.modeMaxTime = 30*1000;
 		this.modes = 3;
-		this.enemyamount = 85;
+		this.enemyamount = 30;
 		
 		// redWall
 		this.redWallSpeed = 2;
@@ -63,6 +69,7 @@ ProShooter.Game.prototype = {
 		this.player.speedx = 300;
 		this.player.speedy = -475;
 		this.player.health = 100;
+		this.player.medikits = 0;
 		this.player.score = 0;
 		this.player.damage = 10;
 		this.player.body.gravity.y = 1000;
@@ -88,6 +95,9 @@ ProShooter.Game.prototype = {
 		this.lastPlatformY = this.world.height - 48;
 		this.lastPlatformX = 5*16;
 		
+		this.medikits = this.add.group();
+		this.medikits.enableBody = true;
+		
 		// obstacles
 		this.obstacles = this.add.group();
 		this.obstacles.enableBody = true;
@@ -100,6 +110,9 @@ ProShooter.Game.prototype = {
 			down : this.game.input.keyboard.addKey(Phaser.Keyboard.S),
 			left : this.game.input.keyboard.addKey(Phaser.Keyboard.A),
 			right : this.game.input.keyboard.addKey(Phaser.Keyboard.D),
+		};
+		this.heal = {
+				heal: this.game.input.keyboard.addKey(Phaser.Keyboard.H),
 		};
 
 		this.direction = 1;
@@ -216,6 +229,13 @@ ProShooter.Game.prototype = {
 				}
 				
 
+			}
+		}
+		
+		if(this.heal.heal.isDown){
+			if(this.player.health < 100 && this.player.medikits > 0){
+				this.player.health += this.medikits.health;
+				this.heal.play();
 			}
 		}
 
@@ -399,17 +419,7 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function(){
-		//this.game.debug.body(this.player);
-		for(var i = 0; i < this.mobs.countLiving(); i++){
-			//this.game.debug.body(this.mobs.getAt(i));
-		}
-		this.game.debug.text(this.bullets.getAt(0).x + ' ' + this.game.camera.x + this.game.camera.width, 20, 120, "#00ff00", "40px Courier");
-		this.game.debug.cameraInfo(this.game.camera, 550, 32);
-		this.game.debug.text("FPS: " + this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
-		
-		//this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x + "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20, 140, "#00ff00", "20px Courier");
-		//this.game.debug.text("Player X: " + this.player.x + 25 + "   Player Y: " + this.player.y + 25 || '--', 20, 200, "#00ff00", "20px Courier");
-		//this.game.debug.text(this.boundsXmax+" "+this.boundsXmin || '--', 20, 230, "#00ff00", "20px Courier");
+
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -466,6 +476,10 @@ ProShooter.Game.prototype = {
 	
 	collectBullet : function(bullet) {
 		bullet.kill();
+	},
+	
+	addMedikit : function(){
+		this.player.medikits += 1;
 	},
 	
 	addPlatform : function(intx ,inty ,size){
@@ -555,9 +569,14 @@ ProShooter.Game.prototype = {
 		}else if(this.game.rnd.integerInRange(0,3) == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup1');
 			pickup.name = 'pickup1';
-		}else{
+		}else if(this.game.rnd.integerInRange(0,3) == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup2');
 			pickup.name = 'pickup2';
+		}else if(this.game.rnd.integerInRange(0,3) == 0){
+			var pickup = this.medikits.create(position.x, position.y, 'medikit');
+			pickup.name = 'medikit';
+			pickup.health = 50;
+			pickup.body.immovable = true;
 		}
 
 		pickup.body.gravity.y = 1000;
@@ -573,20 +592,26 @@ ProShooter.Game.prototype = {
 			this.bulletspred = 2;
 			this.bulletpershoot = 1;
 			this.player.damage = 15;
+			this.pickups.remove(source);
 		}else if(source.name == 'pickup1'){
 			this.shootspeed = 3;
 			this.bulletspeed = 500;
 			this.bulletspred = 20;
 			this.bulletpershoot = 1;
 			this.player.damage = 5;
+			this.pickups.remove(source);
 		}else if(source.name == 'pickup2'){
 			this.shootspeed = 25;
 			this.bulletspeed = 500;
 			this.bulletspred = 30;
 			this.bulletpershoot = 5;
 			this.player.damage = 7;
+			this.pickups.remove(source);
+		}else if(source.name == 'medikit'){
+			this.addMedikit();
+			this.medikits.remove(source);
 		}
-		this.pickups.remove(source);
+		
 		source.kill();
 	},
 	
@@ -614,8 +639,7 @@ ProShooter.Game.prototype = {
 			if(mob.health <= 0){
 				mob.kill();
 				this.player.score += mob.points;
-				this.suicidesfx.play();
-				//mob.deathsfx.play();
+				mob.deathsfx.play();
 			}
 		}else {
 			if(this.game.rnd.integerInRange(0,100) > 85){
@@ -710,15 +734,21 @@ ProShooter.Game.prototype = {
 		if(this.modus != to){
 			
 			if(to == this.modusRush){
-				this.enemyamount = 95;
+				this.enemyamount = 40;
 				this.redWallSpeed = 4;
 				this.modus = to;
 				this.obstacleamount = 70;
+				this.music_heavy.play();
+				this.bossmusic1.stop();
+				this.music.stop();
 			}else if(to == this.modusChalange){
 				this.enemyamount = 70;
 				this.redWallSpeed = 2;
 				this.modus = to;
 				this.obstacleamount = 90;
+				this.music_heavy.play();
+				this.bossmusic1.stop();
+				this.music.stop();
 			}else if(to == this.modusBoss){
 				this.enemyamount = 90;
 				this.redWallSpeed = 2;	
@@ -728,8 +758,13 @@ ProShooter.Game.prototype = {
 				this.modus = to;
 				this.obstacleamount = 10;
 				this.spwanBoss(temp);
+				this.music.stop();
+				this.music_heavy.stop();
+				this.bossmusic1.play();
 			}else{
-				
+				this.music_heavy.stop();
+				this.bossmusic1.stop();
+				this.music.play();
 			}
 		}	
 	},

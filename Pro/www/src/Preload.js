@@ -51,6 +51,8 @@ ProShooter.Preload.prototype = {
     this.load.image('spike', 'asset/spike.png');
     this.load.image('boss1', 'asset/boss.png');
     this.load.image('boss2', 'asset/boss2.png');
+    this.load.image('medikit','asset/firstaid.png');
+    this.load.audio('heal', 'asset/sfx/heal.ogg');
     
     this.load.audio('action1', 'asset/sfx/bgm_action1.ogg');
     this.load.audio('action2', 'asset/sfx/bgm_action2.ogg');
@@ -61,7 +63,6 @@ ProShooter.Preload.prototype = {
     this.load.audio('damage', 'asset/sfx/hurt.ogg');
     this.load.audio('laserbullet1', 'asset/sfx/laser1.ogg');
     this.load.audio('laserbullet2', 'asset/sfx/laser2.ogg');
-    this.load.audio('suicide', 'asset/sfx/suicide.ogg');
     this.load.bitmapFont('mainfont', 'asset/fonts/font.png', 'asset/fonts/font.fnt');
   },
  
