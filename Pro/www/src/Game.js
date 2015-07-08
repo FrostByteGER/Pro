@@ -248,6 +248,7 @@ ProShooter.Game.prototype = {
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
 				this.player.health += this.medikits.health;
+				this.player.medikits--;
 				this.healsfx.play();
 			}
 		}
