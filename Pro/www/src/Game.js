@@ -59,8 +59,6 @@ ProShooter.Game.prototype = {
 		// Map
 		this.map = this.add.group();
 		this.map.create(0,0, 'background');
-		//this.map.create(0,0, 'buildings')
-		//this.game.add.sprite(0, 0, 'map');
 
 		this.player = this.add.sprite(32, this.world.height - 150, 'dude');
 		this.game.physics.arcade.enable(this.player);
@@ -83,6 +81,7 @@ ProShooter.Game.prototype = {
 		this.player.animations.add('walk_northwest', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
 		this.player.animations.add('walk_southwest', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
 		this.player.anchor.setTo(.5, 0);
+		
 		// Change to constant camera speed
 		this.game.camera.follow(this.player);
 
@@ -117,7 +116,10 @@ ProShooter.Game.prototype = {
 		this.heal = {
 				heal: this.game.input.keyboard.addKey(Phaser.Keyboard.H),
 		};
-
+		this.esc = {
+				esc: this.game.input.keyboard.addKey(Phaser.Keyboard.ESC),
+		};
+		
 		this.direction = 1;
 
 		// shoot
@@ -127,7 +129,6 @@ ProShooter.Game.prototype = {
 		this.bullets.createMultiple(60, 'bullet');
 		this.bullets.setAll('anchor.x', 0.5);
 		this.bullets.setAll('anchor.y', 1);
-		//this.bullets.setAll('outOfBoundsKill', true);
 		this.bullets.setAll('checkWorldBounds', true);
 		this.enemybullets = this.game.add.group();
 		this.enemybullets.enableBody = true;
@@ -135,7 +136,6 @@ ProShooter.Game.prototype = {
 		this.enemybullets.createMultiple(50, 'laserbullet');
 		this.enemybullets.setAll('anchor.x', 0.5);
 		this.enemybullets.setAll('anchor.y', 1);
-		//this.enemybullets.setAll('outOfBoundsKill', true);
 		this.enemybullets.setAll('checkWorldBounds', true);
 
 		this.shootspeed = 7;
@@ -160,27 +160,16 @@ ProShooter.Game.prototype = {
 		
 		this.bosse = this.add.group();
 		this.bosse.enableBody = true;
-		this.bosse.physicsBodyType = Phaser.Physics.ARCADE;
-		/*
-		temp = {};
-		temp.x = this.player.x;
-		temp.y = this.player.y;
-		
-		this.spwanBoss(temp);
-		*/
-		
-		
+		this.bosse.physicsBodyType = Phaser.Physics.ARCADE;	
 		
 		// pickups
 		this.pickupAmount = 3;
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
 		this.pickups.physicsBodyType = Phaser.Physics.ARCADE;
-		//this.pickups.createMultiple(10, 'star');
 		this.pickups.setAll('outOfBoundsKill', true);
 		this.pickups.setAll('checkWorldBounds', true);
 
-	    //music.play();
 		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 38);
 		this.uiText.fixedToCamera = true;
 		
@@ -255,17 +244,16 @@ ProShooter.Game.prototype = {
 				enemy.animations.play('walk');
 			}
 		}
-			
-		/*for(var i = 0; i < this.mobs.length; i++){
-			var mob = this.mobs.getAt(i);
-
-		}*/
 		
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
 				this.player.health += this.medikits.health;
 				this.healsfx.play();
 			}
+		}
+		
+		if(this.esc.esc.isDown){
+			this.endGame();
 		}
 
 		// Reset the players velocity (movement)
@@ -304,15 +292,7 @@ ProShooter.Game.prototype = {
 			this.player.body.velocity.y = this.player.speedy;
 
 		}
-		/*
-		if(this.cursors.up.isDown){
-			this.playerShootAngleY = -1;
-		}else if(this.cursors.down.isDown){
-			this.playerShootAngleY = 1;
-		}else{
-			this.playerShootAngleY = 0;
-		}
-		*/
+
 		if(this.player.y >= this.world.height - 51){
 			this.player.kill();
 			this.endGame();
@@ -366,8 +346,6 @@ ProShooter.Game.prototype = {
 			var tile = this.platforms.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
-				//this.platforms.remove(tile);
-				//tile.kill;
 				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
@@ -387,8 +365,6 @@ ProShooter.Game.prototype = {
 			var tile = this.obstacles.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
-				//this.obstacles.remove(tile);
-				//tile.kill;
 				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
@@ -432,8 +408,7 @@ ProShooter.Game.prototype = {
 			this.modeTime = this.matchtime+this.modeMaxTime;
 		}else if(this.modus != this.modusBoss){
 		}
-		
-		
+				
 		this.mobs.forEachDead(function(mob) {
 		    mob.destroy();
 		  });
@@ -458,7 +433,6 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function(){
-		//this.game.debug.text(this.game.width, 10, 20);
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -476,14 +450,12 @@ ProShooter.Game.prototype = {
 				// right
 				// And fire it
 				bullet.reset(scrIntx, scrInty);
-				// bullet.reset(this.player.x, this.player.y);
 				this.game.physics.arcade.velocityFromRotation(this.bulletangle,
 						bulletSpeed, bullet.body.velocity);
 				bullet.rotation = this.bulletangle;
 			} else {
 				// And fire it
 				bullet.reset(scrIntx, scrInty);
-				// bullet.reset(this.player.x, this.player.y);
 
 				this.game.physics.arcade.velocityFromRotation(this.bulletangle, -bulletSpeed, bullet.body.velocity);
 
@@ -567,7 +539,7 @@ ProShooter.Game.prototype = {
 			}else{
 				this.spawnMob(temp, 'enemy2', 30, 55, ((this.platformsize+1)*8)-50,this.damagesfx,this.damagesfx, 50 ,1, 50);
 			}
-			// function(position, sprite, damage, health, range, sfx, deathsfx, points)
+
 		}else if(this.game.rnd.integerInRange(0,100) > 95){
 			
 			temp = {};
@@ -624,7 +596,6 @@ ProShooter.Game.prototype = {
 			var pickup = this.pickups.create(position.x, position.y, 'medikit');
 			pickup.name = 'medikit';
 			pickup.health = 50;
-			//pickup.body.immovable = true;
 		}
 
 		pickup.body.gravity.y = 1000;
@@ -676,7 +647,6 @@ ProShooter.Game.prototype = {
 		}else{
 			player.kill();
 			player.deathsfx.play();
-			//player.destroy(true);
 			this.endGame();
 		}
 	},
