@@ -94,7 +94,7 @@ ProShooter.Game.prototype = {
 		this.platformSizeMin = 6;
 		
 		this.lastPlatformY = this.world.height - 48;
-		this.lastPlatformX = 5*16;
+		this.lastPlatformX = 4*16;
 		this.addPlatform(0,this.world.height - 48,5);
 		
 		this.medikits = this.add.group();
@@ -132,7 +132,7 @@ ProShooter.Game.prototype = {
 		this.enemybullets = this.game.add.group();
 		this.enemybullets.enableBody = true;
 		this.enemybullets.physicsBodyType = Phaser.Physics.ARCADE;
-		this.enemybullets.createMultiple(25, 'laserbullet');
+		this.enemybullets.createMultiple(50, 'laserbullet');
 		this.enemybullets.setAll('anchor.x', 0.5);
 		this.enemybullets.setAll('anchor.y', 1);
 		//this.enemybullets.setAll('outOfBoundsKill', true);
@@ -546,8 +546,8 @@ ProShooter.Game.prototype = {
 		if(this.lastPlatformY < 150){
 			this.lastPlatformY = 150+this.game.rnd.integerInRange(-50,50);
 		}
-		if(this.lastPlatformY > this.world.height - 50){
-			this.lastPlatformY = this.world.height-50-this.game.rnd.integerInRange(0,50);
+		if(this.lastPlatformY > this.world.height - 70){
+			this.lastPlatformY = this.world.height-70-this.game.rnd.integerInRange(0,50);
 		}
 		
 		if(this.game.rnd.integerInRange(0,100) > this.enemyamount){
@@ -576,7 +576,7 @@ ProShooter.Game.prototype = {
 			
 			this.platformsize += 4;
 			
-			for(var i = 3 ; i <  this.platformsize-3 ; i++){
+			for(var i = 2 ; i <  this.platformsize-2 ; i++){
 				if(this.game.rnd.integerInRange(0,100) > 80){
 					this.addObstacles(this.lastPlatformX+(i*16) , this.lastPlatformY-16);
 				}
@@ -657,7 +657,7 @@ ProShooter.Game.prototype = {
 			this.addMedikit();
 			this.medikits.remove(source);
 		}
-		
+		this.player.score += 10;
 		source.kill();
 	},
 	
@@ -739,6 +739,7 @@ ProShooter.Game.prototype = {
 			boss.anchor.setTo(.5, 0.8);
 			boss.damage = 10;
 			boss.spawnposition = position;
+			boss.points = 500;
 			boss.sfx = this.damagesfx;
 		}else{
 			var boss = this.bosse.create(position.x, position.y, 'boss2');
@@ -755,6 +756,7 @@ ProShooter.Game.prototype = {
 			boss.bulletspershoot = 3;
 			boss.anchor.setTo(.5, 0.8);
 			boss.spawnposition = position;
+			boss.points = 500;
 			boss.sfx = this.damagesfx;
 		}
 	},
@@ -783,10 +785,10 @@ ProShooter.Game.prototype = {
 		if(this.modus != to){
 			
 			if(to == this.modusRush){
-				this.enemyamount = 80;
+				this.enemyamount = 90;
 				this.redWallSpeed = 4;
 				this.modus = to;
-				this.obstacleamount = 60;
+				this.obstacleamount = 30;
 				this.music_heavy.play();
 				this.bossmusic1.stop();
 				this.music.stop();
@@ -805,11 +807,11 @@ ProShooter.Game.prototype = {
 			}else if(to == this.modusBoss){
 				this.platformSizeMax = 10;
 				this.platformSizeMin = 8;
-				this.enemyamount = 90;
+				this.enemyamount = 85;
 				this.redWallSpeed = 1;	
 				temp = {};
-				temp.x = this.player.x-1500;
-				temp.y = this.player.y;
+				temp.x = this.player.x;
+				temp.y = this.player.y+1000;
 				this.modus = to;
 				this.obstacleamount = 10;
 				this.spwanBoss(temp);
