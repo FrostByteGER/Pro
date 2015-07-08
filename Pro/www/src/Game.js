@@ -727,7 +727,7 @@ ProShooter.Game.prototype = {
 				this.modus = to;
 				this.obstacleamount = 70;
 			}else if(to == this.modusChalange){
-				this.enemyamount = 70;
+				this.enemyamount = 60;
 				this.redWallSpeed = 2;
 				this.modus = to;
 				this.obstacleamount = 90;
