@@ -23,11 +23,20 @@ ProShooter.Preload.prototype = {
     //this.load.setPreloadSprite(this.preloadBar);
  
     //load game assets
+	  
+	  
+	this.load.image('header','asset/menu/header.png');  
+	this.load.image('play', 'asset/menu/btn_play.png');
+	
+	
     this.load.image('ground','asset/platform.png');
     //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
     this.load.image('surface', 'asset/maps/mapsurface2.png');
+    this.load.image('enemy0', 'asset/enemy.png');
+    this.load.image('enemy1', 'asset/enemy1.png');
+    this.load.image('enemy2', 'asset/enemy2.png');
     this.load.image('alien', 'asset/alien.png');
     this.load.image('background', 'asset/maps/mapbackground1.png');
     this.load.image('plat', 'asset/plat.png');
@@ -40,7 +49,8 @@ ProShooter.Preload.prototype = {
     this.load.image('pickup1', 'asset/M.png');
     this.load.image('pickup2', 'asset/S.png');
     this.load.image('spike', 'asset/spike.png');
-    this.load.image('boss', 'asset/boss.png');
+    this.load.image('boss1', 'asset/boss.png');
+    this.load.image('boss2', 'asset/boss2.png');
     
     this.load.audio('action1', 'asset/sfx/bgm_action1.ogg');
     this.load.audio('action2', 'asset/sfx/bgm_action2.ogg');
@@ -52,11 +62,12 @@ ProShooter.Preload.prototype = {
     this.load.audio('laserbullet1', 'asset/sfx/laser1.ogg');
     this.load.audio('laserbullet2', 'asset/sfx/laser2.ogg');
     this.load.audio('suicide', 'asset/sfx/suicide.ogg');
+    this.load.bitmapFont('mainfont', 'asset/fonts/font.png', 'asset/fonts/font.fnt');
   },
  
   create: function() {
  
-   this.state.start('Game');
+   this.state.start('MainMenu');
  
   }
  
