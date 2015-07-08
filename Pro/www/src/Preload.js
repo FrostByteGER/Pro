@@ -23,6 +23,9 @@ ProShooter.Preload.prototype = {
     //this.load.setPreloadSprite(this.preloadBar);
  
     //load game assets
+	  
+	  
+	this.load.image('header','asset/menu/header.png');  
     this.load.image('ground','asset/platform.png');
     //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
@@ -51,11 +54,12 @@ ProShooter.Preload.prototype = {
     this.load.audio('laserbullet1', 'asset/sfx/laser1.ogg');
     this.load.audio('laserbullet2', 'asset/sfx/laser2.ogg');
     this.load.audio('suicide', 'asset/sfx/suicide.ogg');
+    this.load.bitmapFont('mainfont', 'asset/fonts/font.png', 'asset/fonts/font.fnt');
   },
  
   create: function() {
  
-   this.state.start('Game');
+   this.state.start('MainMenu');
  
   }
  
