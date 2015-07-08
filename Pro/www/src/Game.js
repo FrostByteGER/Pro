@@ -171,6 +171,7 @@ ProShooter.Game.prototype = {
 		
 		
 		// pickups
+		this.pickupAmount = 3;
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
 		this.pickups.physicsBodyType = Phaser.Physics.ARCADE;
@@ -183,6 +184,12 @@ ProShooter.Game.prototype = {
 		this.uiText.fixedToCamera = true;
 		
 		this.debug = 0;
+		
+		temp = {};
+		temp.x = 100;
+		temp.y = 100;
+		
+		this.spwanBoss(temp);
 		
 	},
 
@@ -404,7 +411,7 @@ ProShooter.Game.prototype = {
 			
 			if(boss.y < this.player.y){
 				boss.y += this.player.y/boss.y;
-			}else if(boss.y > this.player.y){
+			}else if(boss.y > this.player.y && boss.y > boss.higth){
 				boss.y -= boss.y/this.player.y;
 			}
 			
@@ -535,7 +542,7 @@ ProShooter.Game.prototype = {
 		
 		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+inx;
 		
-		this.lastPlatformY = this.lastPlatformY+(this.game.rnd.integerInRange(-50,50)*(2-(this.game.rnd.integerInRange(1,200)/200)));
+		this.lastPlatformY = this.lastPlatformY+(this.game.rnd.integerInRange(-50,0)*(2-(this.game.rnd.integerInRange(1,200)/200)));
 		
 		this.platformsize = this.game.rnd.integerInRange(5,10);
 		
@@ -561,7 +568,7 @@ ProShooter.Game.prototype = {
 				this.spawnMob(temp, 'enemy2', 30, 55, ((this.platformsize+1)*8)-50,this.damagesfx,this.damagesfx, 50 ,1, 50);
 			}
 			// function(position, sprite, damage, health, range, sfx, deathsfx, points)
-		}else if(this.game.rnd.integerInRange(0,100) > 80){
+		}else if(this.game.rnd.integerInRange(0,100) > 95){
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
@@ -602,13 +609,15 @@ ProShooter.Game.prototype = {
 	
 	spawnPickup : function(position){
 		
-		if(this.game.rnd.integerInRange(0,3) == 0){
+		var temp = this.game.rnd.integerInRange(0,this.pickupAmount);
+		
+		if(temp == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup0');
 			pickup.name = 'pickup0';
-		}else if(this.game.rnd.integerInRange(0,3) == 0){
+		}else if(temp == 1){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup1');
 			pickup.name = 'pickup1';
-		}else if(this.game.rnd.integerInRange(0,3) == 0){
+		}else if(temp == 2){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup2');
 			pickup.name = 'pickup2';
 		}else{
@@ -683,7 +692,7 @@ ProShooter.Game.prototype = {
 				mob.deathsfx.play();
 			}
 		}else {
-			if(this.game.rnd.integerInRange(0,100) > 85){
+			if(this.game.rnd.integerInRange(0,100) > 80){
 				this.spawnPickup(mob.spawnposition);
 			}
 		}	
@@ -720,7 +729,8 @@ ProShooter.Game.prototype = {
 	spwanBoss : function(position){
 		if(this.game.rnd.integerInRange(0,100) > 50){
 			var boss = this.bosse.create(position.x, position.y, 'boss1');	
-			boss.health = 600;
+			boss.higth = 159*0.8;
+			boss.health = 800;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.bulletOffsetX = 0;
@@ -730,18 +740,19 @@ ProShooter.Game.prototype = {
 			boss.bulletSpread = 7;
 			boss.bulletspershoot = 2;
 			boss.anchor.setTo(.5, 0.8);
-			boss.damage = 25;
+			boss.damage = 10;
 			boss.spawnposition = position;
 			boss.sfx = this.damagesfx;
 		}else{
-			var boss = this.bosse.create(position.x, position.y, 'boss2');	
-			boss.health = 800;
+			var boss = this.bosse.create(position.x, position.y, 'boss2');
+			boss.higth = 197*0.8;
+			boss.health = 1000;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.maxcooldown = 300;
 			boss.bulletOffsetX = 70;
 			boss.bulletOffsetY = -110;
-			boss.damage = 25;
+			boss.damage = 10;
 			boss.cooldown = boss.maxcooldown;
 			boss.bulletSpread = 8;
 			boss.bulletspershoot = 3;
@@ -792,7 +803,7 @@ ProShooter.Game.prototype = {
 				this.music.stop();
 			}else if(to == this.modusBoss){
 				this.enemyamount = 90;
-				this.redWallSpeed = 2;	
+				this.redWallSpeed = 1;	
 				temp = {};
 				temp.x = this.player.x-1500;
 				temp.y = this.player.y;
