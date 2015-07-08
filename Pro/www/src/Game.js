@@ -205,8 +205,8 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.collide(this.mobs, this.platforms);
 		this.physics.arcade.collide(this.pickups, this.platforms);
 		
-		for(var i = 0; i < this.mobs.length; i++){
-			var enemy = this.mobs.getAt(i);
+		
+		this.mobs.forEachAlive(function(enemy){
 			if(enemy.inCamera){
 				if (enemy.fireCooldown == 0) {
 					for (var i = 0; i < enemy.bulletsPerSalve; i++) {
@@ -230,11 +230,9 @@ ProShooter.Game.prototype = {
 				if (enemy.fireCooldown > 0) {
 					enemy.fireCooldown--;
 				}
-				
-
-			}
-		}
-		
+			}		
+		});
+			
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
 				this.player.health += this.medikits.health;
@@ -318,22 +316,22 @@ ProShooter.Game.prototype = {
 			this.shootcooldown--;
 		}
 		
-		for(var i = 0; i < this.mobs.length; i++){
-			var mob = this.mobs.getAt(i);
-			if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
-				mob.x += mob.speed;
-			}else if(mob.direction == 'right'){
-				mob.direction = 'left';
-				mob.scale.x *= -1;
-			}
-			
-			if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
-				mob.x -= mob.speed;
-			}else if(mob.direction == 'left'){
-				mob.direction = 'right';
-				mob.scale.x *= -1;
-			}
-		}
+		this.mobs.forEachAlive(function(mob){
+				if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
+					mob.x += mob.speed;
+				}else if(mob.direction == 'right'){
+					mob.direction = 'left';
+					mob.scale.x *= -1;
+				}
+				
+				if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
+					mob.x -= mob.speed;
+				}else if(mob.direction == 'left'){
+					mob.direction = 'right';
+					mob.scale.x *= -1;
+				}
+		});
+
 	
 		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
@@ -383,8 +381,7 @@ ProShooter.Game.prototype = {
 			}
 		}
 		
-		for(var i = 0; i < this.bosse.length; i++){
-			var boss = this.bosse.getAt(i);
+		this.bosse.forEachAlive(function(boss){
 			boss.x = this.game.camera.x;
 			
 			if(boss.x < this.player.x-500){
@@ -407,8 +404,7 @@ ProShooter.Game.prototype = {
 			}else{
 				boss.cooldown--;
 			}
-			
-		}
+		});
 		
 		this.redWallX += this.redWallSpeed;
 		
