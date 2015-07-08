@@ -420,7 +420,7 @@ ProShooter.Game.prototype = {
 		}
 		this.game.debug.text(this.bullets.getAt(0).x + ' ' + this.game.camera.x + this.game.camera.width, 20, 120, "#00ff00", "40px Courier");
 		this.game.debug.cameraInfo(this.game.camera, 550, 32);
-		this.game.debug.text("FPS: " + this.game.time.fps+" "+this.redWallSpeed || '--', 20, 70, "#00ff00", "40px Courier");
+		this.game.debug.text("FPS: " + this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
 		
 		//this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x + "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20, 140, "#00ff00", "20px Courier");
 		//this.game.debug.text("Player X: " + this.player.x + 25 + "   Player Y: " + this.player.y + 25 || '--', 20, 200, "#00ff00", "20px Courier");
@@ -728,7 +728,7 @@ ProShooter.Game.prototype = {
 				this.enemyamount = 95;
 				this.redWallSpeed = 4;
 				this.modus = to;
-				this.obstacleamount = 70;
+				this.obstacleamount = 60;
 			}else if(to == this.modusChalange){
 				this.enemyamount = 60;
 				this.redWallSpeed = 2;
