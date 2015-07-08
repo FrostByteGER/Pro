@@ -82,7 +82,7 @@ ProShooter.Preload.prototype = {
  
   create: function() {
  
-   this.state.start('EndScreen');
+   this.state.start('MainMenu');
  
   }
  

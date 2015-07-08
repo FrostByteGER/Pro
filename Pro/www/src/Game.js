@@ -24,8 +24,8 @@ ProShooter.Game.prototype = {
 		this.lasersfx1.volume = 0.05;
 		this.lasersfx2 = this.game.add.audio('laserbullet2');
 		this.lasersfx2.volume = 0.2;
-		this.heal = this.game.add.audio('heal');
-		this.heal.volume = 0.3;
+		this.healsfx = this.game.add.audio('heal');
+		this.healsfx.volume = 0.3;
 		this.bossmusic1 = this.game.add.audio('boss1');
 		this.bossmusic1.loop = true;
 		this.bossmusic1.volume = 0.2;
@@ -69,7 +69,7 @@ ProShooter.Game.prototype = {
 		this.player.speedx = 300;
 		this.player.speedy = -475;
 		this.player.health = 100;
-		this.player.medikits = 0;
+		this.player.medikits = 1;
 		this.player.score = 0;
 		this.player.damage = 10;
 		this.player.body.gravity.y = 1000;
@@ -97,6 +97,7 @@ ProShooter.Game.prototype = {
 		
 		this.medikits = this.add.group();
 		this.medikits.enableBody = true;
+		this.medikits.health = 50;
 		
 		// obstacles
 		this.obstacles = this.add.group();
@@ -237,7 +238,7 @@ ProShooter.Game.prototype = {
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
 				this.player.health += this.medikits.health;
-				//this.heal.play();
+				this.healsfx.play();
 			}
 		}
 
