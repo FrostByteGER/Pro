@@ -198,7 +198,7 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.overlap(this.player, this.mobs,function(player) {
 			player.health = 0;
 		    player.kill();
-		    this.restartGame();
+		    this.endGame();
 		  }, null, this);
 		this.physics.arcade.collide(this.mobs, this.ground);
 		this.physics.arcade.collide(this.mobs, this.platforms);
@@ -288,7 +288,7 @@ ProShooter.Game.prototype = {
 		*/
 		if(this.player.y >= this.world.height - 51){
 			this.player.kill();
-			this.restartGame();
+			this.endGame();
 		}
 		
 		if(this.cursors.left.isDown){
@@ -338,7 +338,7 @@ ProShooter.Game.prototype = {
 			this.addRandomPlatform();
 		}
 		
-		if(this.player.x+800 > this.boundsXmax){
+		if(this.player.x + 800 > this.boundsXmax){
 			this.map.x = this.player.x-800;
 			this.boundsXmax = this.player.x+1600;
 			this.boundsXmin = this.player.x-800;
@@ -643,13 +643,13 @@ ProShooter.Game.prototype = {
 			if(player.health <= 0){
 				player.kill();
 				player.deathsfx.play();
-				this.restartGame();
+				this.endGame();
 			}
 		}else{
 			player.kill();
 			player.deathsfx.play();
 			//player.destroy(true);
-			this.restartGame();
+			this.endGame();
 		}
 	},
 	
@@ -795,7 +795,20 @@ ProShooter.Game.prototype = {
 		this.music.stop();
 	},
 	
+	endGame : function(){
+		this.game.score = this.player.score;
+		this.game.playtime = Math.round(this.game.time.now*0.001);
+		if(this.game.score > this.game.highscore){
+			this.game.highscore = this.game.score;
+		}
+		if(this.game.playtime > this.game.besttime){
+			this.game.besttime = this.game.playtime;
+		}
+		this.restartGame();
+	},
+	
 	restartGame : function(){
+
 		this.state.start('EndScreen');
 	}
 };

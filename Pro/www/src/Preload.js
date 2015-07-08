@@ -55,8 +55,11 @@ ProShooter.Preload.prototype = {
     this.load.image('gameOver','asset/menu/GameOver.png');
     this.load.image('score','asset/menu/Score.png');
     this.load.image('time','asset/menu/Time.png');
-    this.load.image('highscore','asset/Highscore.png');
+    this.load.image('highscore','asset/menu/Highscore.png');
     this.load.image('besttime','asset/menu/BestTime.png');
+    
+    this.load.image('retry','asset/menu/btn_retry.png');
+    this.load.image('back','asset/menu/btn_back.png');
     
     this.load.audio('heal', 'asset/sfx/heal.ogg');
     
@@ -70,11 +73,16 @@ ProShooter.Preload.prototype = {
     this.load.audio('laserbullet1', 'asset/sfx/laser1.ogg');
     this.load.audio('laserbullet2', 'asset/sfx/laser2.ogg');
     this.load.bitmapFont('mainfont', 'asset/fonts/font.png', 'asset/fonts/font.fnt');
+    
+    this.game.score = 0;
+    this.game.highscore = 0;
+    this.game.playtime = 0;
+    this.game.besttime = 0;
   },
  
   create: function() {
  
-   this.state.start('MainMenu');
+   this.state.start('EndScreen');
  
   }
  
