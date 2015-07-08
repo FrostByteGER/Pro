@@ -788,6 +788,6 @@ ProShooter.Game.prototype = {
 	},
 	
 	restartGame : function(){
-		this.state.restart();
+		this.state.start('EndScreen');
 	}
 };
