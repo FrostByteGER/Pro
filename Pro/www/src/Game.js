@@ -70,7 +70,7 @@ ProShooter.Game.prototype = {
 		this.player.hitxSpeed = 0;
 		this.player.speedy = -475;
 		this.player.health = 100;
-		this.player.medikits = 1;
+		this.player.medikits = 0;
 		this.player.score = 0;
 		this.player.damage = 10;
 		this.player.body.gravity.y = 1000;
@@ -183,11 +183,12 @@ ProShooter.Game.prototype = {
 		this.uiText.fixedToCamera = true;
 		
 		this.debug = 0;
-		
+		this.playtime = 0;
 	},
 
 	update : function() {
-		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001) + '    Medikits: ' + this.player.medikits);
+		this.playtime += this.game.time.physicsElapsedMS * 0.001;
+		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.playtime) + '    Medikits: ' + this.player.medikits);
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.overlap(this.player, this.obstacles, this.touchSpike, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
@@ -818,7 +819,7 @@ ProShooter.Game.prototype = {
 	
 	endGame : function(){
 		this.game.score = this.player.score;
-		this.game.playtime = Math.round(this.game.time.now*0.001);
+		this.game.playtime = this.time;
 		if(this.game.score > this.game.highscore){
 			this.game.highscore = this.game.score;
 		}

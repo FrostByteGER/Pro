@@ -11,11 +11,11 @@ ProShooter.EndMenu = function(){};
 ProShooter.EndMenu.prototype = {
  
   create: function() {
-	    this.mainbg = this.add.sprite(0,0, 'background');
-		this.main = this.game.add.audio('main');
-		this.main.volume = 0.2;
-		this.main.loop = true;
-	    this.main.play();
+	    this.endbg = this.add.sprite(0,0, 'background');
+		this.end = this.game.add.audio('main');
+		this.end.volume = 0.2;
+		this.end.loop = true;
+	    this.end.play();
 		this.gameOver = this.add.sprite(this.game.width/2 - 360/2, 100, 'gameOver');
 		this.currentScore = this.add.sprite(this.game.width/2 - 319/2 - 75, 200,'score');
 		this.currentTime = this.add.sprite(this.game.width/2 - 319/2 - 75, 250,'time');
@@ -23,11 +23,11 @@ ProShooter.EndMenu.prototype = {
 		this.bestTime = this.add.sprite(this.game.width/2 - 319/2 - 75, 350,'besttime');
 		
 		this.retryButton = this.add.button(this.game.width/2 - 338, 425,'retry', function(){
-			this.main.stop();
+			this.end.stop();
 			this.state.start('Game');
 		}, this, 0, 0, 0);
 		this.backButton = this.add.button(this.game.width/2, 425,'back', function(){
-			this.main.stop();
+			this.end.stop();
 		this.state.start('MainMenu');
 		}, this, 0, 0, 0);
 		

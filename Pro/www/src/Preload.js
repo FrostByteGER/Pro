@@ -12,16 +12,6 @@ ProShooter.Preload.prototype = {
  
   preload: function() {
  
-    //show loading screen
- 
-    //this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
- 
-    //this.preloadBar.anchor.setTo(0.5);
- 
-    //this.preloadBar.scale.setTo(3);
- 
-    //this.load.setPreloadSprite(this.preloadBar);
- 
     //load game assets
 	  
 	  
@@ -30,10 +20,8 @@ ProShooter.Preload.prototype = {
 	
 	
     this.load.image('ground','asset/platform.png');
-    //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
-    //this.load.image('surface', 'asset/maps/mapsurface2.png');
     this.load.image('enemy0', 'asset/enemy.png');
     this.load.image('enemy1', 'asset/enemy1.png');
     this.load.image('enemy2', 'asset/enemy2.png');
