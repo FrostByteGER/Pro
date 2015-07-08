@@ -33,9 +33,11 @@ ProShooter.Preload.prototype = {
     //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
+    //this.load.image('surface', 'asset/maps/mapsurface2.png');
     this.load.image('enemy0', 'asset/enemy.png');
     this.load.image('enemy1', 'asset/enemy1.png');
     this.load.image('enemy2', 'asset/enemy2.png');
+    this.load.image('alien', 'asset/alien.png');
     this.load.image('background', 'asset/maps/mapbackground1.png');
     this.load.image('plat', 'asset/plat.png');
     this.load.image('plat_start', 'asset/plat_start.png');
