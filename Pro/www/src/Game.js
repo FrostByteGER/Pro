@@ -548,7 +548,7 @@ ProShooter.Game.prototype = {
 				this.spawnMob(temp, 'enemy2', 30, 55, ((this.platformsize+1)*8)-50,this.damagesfx,this.damagesfx, 50 ,1, 50);
 			}
 			// function(position, sprite, damage, health, range, sfx, deathsfx, points)
-		}else if(this.game.rnd.integerInRange(0,100) > 0){
+		}else if(this.game.rnd.integerInRange(0,100) > 80){
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
@@ -583,13 +583,13 @@ ProShooter.Game.prototype = {
 	
 	spawnPickup : function(position){
 		
-		if(this.game.rnd.integerInRange(0,3) == 5){
+		if(this.game.rnd.integerInRange(0,3) == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup0');
 			pickup.name = 'pickup0';
-		}else if(this.game.rnd.integerInRange(0,3) == 5){
+		}else if(this.game.rnd.integerInRange(0,3) == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup1');
 			pickup.name = 'pickup1';
-		}else if(this.game.rnd.integerInRange(0,3) == 5){
+		}else if(this.game.rnd.integerInRange(0,3) == 0){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup2');
 			pickup.name = 'pickup2';
 		}else{
