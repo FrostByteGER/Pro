@@ -34,6 +34,9 @@ ProShooter.Preload.prototype = {
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
     this.load.image('surface', 'asset/maps/mapsurface2.png');
+    this.load.image('enemy0', 'asset/enemy.png');
+    this.load.image('enemy1', 'asset/enemy1.png');
+    this.load.image('enemy2', 'asset/enemy2.png');
     this.load.image('alien', 'asset/alien.png');
     this.load.image('background', 'asset/maps/mapbackground1.png');
     this.load.image('plat', 'asset/plat.png');
@@ -45,7 +48,9 @@ ProShooter.Preload.prototype = {
     this.load.image('pickup0', 'asset/R.png');
     this.load.image('pickup1', 'asset/M.png');
     this.load.image('pickup2', 'asset/S.png');
-    this.load.image('boss', 'asset/boss.png');
+    this.load.image('spike', 'asset/spike.png');
+    this.load.image('boss1', 'asset/boss.png');
+    this.load.image('boss2', 'asset/boss2.png');
     
     this.load.audio('action1', 'asset/sfx/bgm_action1.ogg');
     this.load.audio('action2', 'asset/sfx/bgm_action2.ogg');

@@ -36,14 +36,14 @@ ProShooter.Game.prototype = {
 		this.modusBoss = 2;
 		this.modusChalange = 3;
 		this.modeTime = this.time.now;
-		this.modeMaxTime = 60*1000;
+		this.modeMaxTime = 30*1000;
 		this.modes = 3;
 		this.enemyamount = 85;
 		
 		// redWall
 		this.redWallSpeed = 2;
 		this.redWallbuffer = 250;
-		this.redWallX = -this.redWallbuffer;
+		this.redWallX = -this.redWallbuffer-1000;
 		
 		this.boundsXmax = 1600;
 		this.boundsXmin = 0;
@@ -79,17 +79,19 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		this.ground = this.add.sprite(0, this.world.height - 32, 'surface');
-		this.game.physics.arcade.enable(this.ground);
-		this.ground.body.immovable = true;
 		
 		this.addPlatform(0,this.world.height - 48,5);
-		this.platformsize = 5;
+		this.platformsize = 4;
 		
 		this.lastPlatformY = this.world.height - 48;
 		this.lastPlatformX = 6*16;
 		
-
+		// obstacles
+		this.obstacles = this.add.group();
+		this.obstacles.enableBody = true;
+		
+		this.obstacleamount = 90;
+		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
 			up : this.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -167,6 +169,7 @@ ProShooter.Game.prototype = {
 	update : function() {
 		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001));
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
+		this.physics.arcade.overlap(this.player, this.obstacles, this.touchSpike, null, this);
 		//this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
 		this.physics.arcade.overlap(this.bosse, this.bullets, this.hitBoss, null, this);
@@ -283,14 +286,14 @@ ProShooter.Game.prototype = {
 		for(var i = 0; i < this.mobs.length; i++){
 			var mob = this.mobs.getAt(i);
 			if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
-				mob.x += 2;
+				mob.x += mob.speed;
 			}else if(mob.direction == 'right'){
 				mob.direction = 'left';
 				mob.scale.x *= -1;
 			}
 			
 			if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
-				mob.x -= 2;
+				mob.x -= mob.speed;
 			}else if(mob.direction == 'left'){
 				mob.direction = 'right';
 				mob.scale.x *= -1;
@@ -320,6 +323,15 @@ ProShooter.Game.prototype = {
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
 				this.platforms.remove(tile);
+				tile.kill;
+			}
+		}
+		
+		for(var i = 0 ; i < this.obstacles.length ; i++){
+			var tile = this.obstacles.children[i];
+			
+			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				this.obstacles.remove(tile);
 				tile.kill;
 			}
 		}
@@ -483,24 +495,46 @@ ProShooter.Game.prototype = {
 			
 			this.platformsize += 10;
 			
-			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
 			temp.y = this.lastPlatformY;
-			this.spawnMob(temp, 'alien', 1, 50, ((this.platformsize+1)*8)-70,this.damagesfx,this.damagesfx, 100);
-		}
-		
-		if(this.game.rnd.integerInRange(0,100) > 95){
+			if(this.game.rnd.integerInRange(0,100) > 50){
+				this.spawnMob(temp, 'enemy1', 1, 50, ((this.platformsize+1)*8)-10,this.damagesfx,this.damagesfx, 100 ,2);
+			}else if(this.game.rnd.integerInRange(0,100) > 50){
+				this.spawnMob(temp, 'enemy0', 1, 20, ((this.platformsize+1)*8)-8,this.damagesfx,this.damagesfx, 50 ,3);
+			}else{
+				this.spawnMob(temp, 'enemy2', 1, 100, ((this.platformsize+1)*8)-8,this.damagesfx,this.damagesfx, 50 ,1);
+			}
+			// function(position, sprite, damage, health, range, sfx, deathsfx, points)
+		}else if(this.game.rnd.integerInRange(0,100) > 95){
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
 			temp.y = this.lastPlatformY;
 			
 			this.spawnPickup(temp);
+		}else if(this.game.rnd.integerInRange(0,100) > this.obstacleamount ){
+			
+			this.platformsize += 10;
+			
+			for(var i = 3 ; i <  this.platformsize-3 ; i++){
+				if(this.game.rnd.integerInRange(0,100) > 80){
+					this.addObstacles(this.lastPlatformX+(i*16) , this.lastPlatformY-16);
+				}
+			}
 		}
 		
 		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.platformsize);
 		
+	},
+	
+	addObstacles :function(intx,inty){
+		var spike = this.obstacles.create(intx,inty, 'spike');
+		spike.body.immovable = true;
+	},
+	
+	touchSpike : function(player, source){
+		this.damagePlayer(player,source);
 	},
 	
 	spawnPickup : function(position){
@@ -542,8 +576,6 @@ ProShooter.Game.prototype = {
 		source.kill();
 	},
 	
-	
-	
 	damagePlayer : function(player, source) {
 		if(player.health > 0){
 			player.health -= 5;
@@ -580,7 +612,7 @@ ProShooter.Game.prototype = {
 		
 	},
 	
-	spawnMob : function(position, sprite, damage, health, range, sfx, deathsfx, points) {
+	spawnMob : function(position, sprite, damage, health, range, sfx, deathsfx, points,speed) {
 		var mob = this.mobs.create(position.x, position.y, sprite);
 		mob.damage = damage;
 		mob.health = health;
@@ -596,22 +628,36 @@ ProShooter.Game.prototype = {
 		mob.sfx = sfx;
 		mob.deathsfx = deathsfx;
 		mob.points = points;
+		mob.speed = speed;
 		return mob;
 	},
 	
 	spwanBoss : function(position){
-		
-		var boss = this.bosse.create(position.x, position.y, 'boss');	
-		boss.health = 100;
-		boss.name = name;
-		boss.bulletSpeed = 600;
-		boss.maxcooldown = 200;
-		boss.cooldown = boss.maxcooldown;
-		boss.bulletSpread = 5;
-		boss.bulletspershoot = 5;
-		boss.anchor.setTo(.5, 0.8);
-		boss.spawnposition = position;
-		boss.sfx = this.damagesfx;
+		if(this.game.rnd.integerInRange(0,100) > 50){
+			var boss = this.bosse.create(position.x, position.y, 'boss1');	
+			boss.health = 1500;
+			boss.name = name;
+			boss.bulletSpeed = 600;
+			boss.maxcooldown = 200;
+			boss.cooldown = boss.maxcooldown;
+			boss.bulletSpread = 5;
+			boss.bulletspershoot = 5;
+			boss.anchor.setTo(.5, 0.8);
+			boss.spawnposition = position;
+			boss.sfx = this.damagesfx;
+		}else{
+			var boss = this.bosse.create(position.x, position.y, 'boss2');	
+			boss.health = 2500;
+			boss.name = name;
+			boss.bulletSpeed = 600;
+			boss.maxcooldown = 350;
+			boss.cooldown = boss.maxcooldown;
+			boss.bulletSpread = 6;
+			boss.bulletspershoot = 6;
+			boss.anchor.setTo(.5, 0.8);
+			boss.spawnposition = position;
+			boss.sfx = this.damagesfx;
+		}
 	},
 	
 	hitBoss : function(boss, source){
@@ -639,12 +685,14 @@ ProShooter.Game.prototype = {
 			
 			if(to == this.modusRush){
 				this.enemyamount = 95;
-				this.redWallSpeed = 4;
+				this.redWallSpeed = 5;
 				this.modus = to;
+				this.obstacleamount = 70;
 			}else if(to == this.modusChalange){
 				this.enemyamount = 70;
 				this.redWallSpeed = 2;
 				this.modus = to;
+				this.obstacleamount = 90;
 			}else if(to == this.modusBoss){
 				this.enemyamount = 90;
 				this.redWallSpeed = 2;	
@@ -652,6 +700,7 @@ ProShooter.Game.prototype = {
 				temp.x = this.player.x-400;
 				temp.y = this.player.y;
 				this.modus = to;
+				this.obstacleamount = 10;
 				this.spwanBoss(temp);
 			}else{
 				
