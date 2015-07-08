@@ -39,6 +39,7 @@ ProShooter.Preload.prototype = {
     this.load.image('pickup0', 'asset/R.png');
     this.load.image('pickup1', 'asset/M.png');
     this.load.image('pickup2', 'asset/S.png');
+    this.load.image('spike', 'asset/spike.png');
     this.load.image('boss', 'asset/boss.png');
     
     this.load.audio('action1', 'asset/sfx/bgm_action1.ogg');

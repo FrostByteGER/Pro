@@ -79,17 +79,19 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		this.ground = this.add.sprite(0, this.world.height - 32, 'surface');
-		this.game.physics.arcade.enable(this.ground);
-		this.ground.body.immovable = true;
 		
 		this.addPlatform(0,this.world.height - 48,5);
 		this.platformsize = 5;
 		
 		this.lastPlatformY = this.world.height - 48;
-		this.lastPlatformX = 6*16;
+		this.lastPlatformX = 5*16;
 		
-
+		// obstacles
+		this.obstacles = this.add.group();
+		this.platforms.enableBody = true;
+		
+		this.obstacleamount = 90;
+		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.wasd = {
 			up : this.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -462,18 +464,25 @@ ProShooter.Game.prototype = {
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
 			temp.y = this.lastPlatformY;
 			this.spawnMob(temp, 'alien', 1, 50, ((this.platformsize+1)*8)-70,this.damagesfx,this.damagesfx);
-		}
-		
-		if(this.game.rnd.integerInRange(0,100) > 95){
+		}else if(this.game.rnd.integerInRange(0,100) > 95){
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
 			temp.y = this.lastPlatformY;
 			
 			this.spawnPickup(temp);
+		}else if(this.game.rnd.integerInRange(0,100) > this.obstacleamount ){
+			
 		}
 		
 		this.addPlatform(this.lastPlatformX , this.lastPlatformY , this.platformsize);
+		
+	},
+	
+	addObstacles :function(intx,inty){
+		var palt = this.platforms.create(intx,inty, 'plat_start');
+		palt.body.immovable = true;
+		
 		
 	},
 	
