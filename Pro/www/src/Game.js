@@ -165,6 +165,9 @@ ProShooter.Game.prototype = {
 		
 		this.spwanBoss(temp);
 		*/
+		
+		
+		
 		// pickups
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
@@ -176,7 +179,6 @@ ProShooter.Game.prototype = {
 	    //music.play();
 		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 48);
 		this.uiText.fixedToCamera = true;
-		
 	},
 
 	update : function() {
@@ -349,6 +351,12 @@ ProShooter.Game.prototype = {
 			var tile = this.platforms.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				//this.platforms.remove(tile);
+				//tile.kill;
+				tile.body.velocity.y += this.redWallSpeed;
+				tile.body.rotation +=10;
+			}
+			if(tile.y < 0){
 				this.platforms.remove(tile);
 				tile.kill;
 			}
@@ -358,6 +366,12 @@ ProShooter.Game.prototype = {
 			var tile = this.obstacles.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				//this.obstacles.remove(tile);
+				//tile.kill;
+				tile.body.velocity.y += this.redWallSpeed;
+				tile.body.rotation +=10;
+			}
+			if(tile.y < 0){
 				this.obstacles.remove(tile);
 				tile.kill;
 			}
@@ -679,7 +693,7 @@ ProShooter.Game.prototype = {
 	spwanBoss : function(position){
 		if(this.game.rnd.integerInRange(0,100) > 50){
 			var boss = this.bosse.create(position.x, position.y, 'boss1');	
-			boss.health = 700;
+			boss.health = 600;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.bulletOffsetX = 0;
@@ -694,12 +708,12 @@ ProShooter.Game.prototype = {
 			boss.sfx = this.damagesfx;
 		}else{
 			var boss = this.bosse.create(position.x, position.y, 'boss2');	
-			boss.health = 1000;
+			boss.health = 800;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.maxcooldown = 300;
-			boss.bulletOffsetX = 60;
-			boss.bulletOffsetY = -255;
+			boss.bulletOffsetX = 70;
+			boss.bulletOffsetY = -110;
 			boss.damage = 25;
 			boss.cooldown = boss.maxcooldown;
 			boss.bulletSpread = 8;
@@ -737,12 +751,12 @@ ProShooter.Game.prototype = {
 				this.enemyamount = 40;
 				this.redWallSpeed = 4;
 				this.modus = to;
-				this.obstacleamount = 70;
+				this.obstacleamount = 60;
 				this.music_heavy.play();
 				this.bossmusic1.stop();
 				this.music.stop();
 			}else if(to == this.modusChalange){
-				this.enemyamount = 70;
+				this.enemyamount = 60;
 				this.redWallSpeed = 2;
 				this.modus = to;
 				this.obstacleamount = 90;
