@@ -173,7 +173,7 @@ ProShooter.Game.prototype = {
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
 		this.pickups.physicsBodyType = Phaser.Physics.ARCADE;
-		this.pickups.createMultiple(10, 'star');
+		//this.pickups.createMultiple(10, 'star');
 		this.pickups.setAll('outOfBoundsKill', true);
 		this.pickups.setAll('checkWorldBounds', true);
 
