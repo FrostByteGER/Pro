@@ -42,8 +42,8 @@ ProShooter.Game.prototype = {
 		this.modusRush = 1;
 		this.modusBoss = 2;
 		this.modusChalange = 3;
-		this.modeTime = this.time.now;
-		this.modeMaxTime = 30*1000;
+		this.modeTime = 30;
+		this.modeMaxTime = 30;
 		this.modes = 3;
 		this.enemyamount = 80;
 		
@@ -70,7 +70,7 @@ ProShooter.Game.prototype = {
 		this.player.hitxSpeed = 0;
 		this.player.speedy = -475;
 		this.player.health = 100;
-		this.player.medikits = 1;
+		this.player.medikits = 0;
 		this.player.score = 0;
 		this.player.damage = 10;
 		this.player.body.gravity.y = 1000;
@@ -89,12 +89,11 @@ ProShooter.Game.prototype = {
 		// Ground
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
-		
-		this.addPlatform(0,this.world.height - 48,5);
 		this.platformsize = 4;
 		
 		this.lastPlatformY = this.world.height - 48;
 		this.lastPlatformX = 5*16;
+		this.addPlatform(0,this.world.height - 48,5);
 		
 		this.medikits = this.add.group();
 		this.medikits.enableBody = true;
@@ -184,17 +183,13 @@ ProShooter.Game.prototype = {
 		this.uiText.fixedToCamera = true;
 		
 		this.debug = 0;
-		
-		temp = {};
-		temp.x = 100;
-		temp.y = 100;
-		
-		this.spwanBoss(temp);
+		this.matchtime = 0;
 		
 	},
 
 	update : function() {
-		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.game.time.now*0.001) + '    Medikits: ' + this.player.medikits);
+		this.matchtime += this.game.time.physicsElapsedMS * 0.001;
+		this.uiText.setText('Health: ' + this.player.health + '    Score: ' + this.player.score + '    Time: ' + Math.round(this.matchtime) + '    Medikits: ' + this.player.medikits);
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.overlap(this.player, this.obstacles, this.touchSpike, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
@@ -427,9 +422,9 @@ ProShooter.Game.prototype = {
 		
 		this.redWallX += this.redWallSpeed;
 		
-		if(this.time.now-this.modeTime >= this.modeMaxTime && this.modus != this.modusBoss){
+		if(this.matchtime >= this.modeTime && this.modus != this.modusBoss){
 			this.changeMode(this.game.rnd.integerInRange(0,this.modes))
-			this.modeTime = this.time.now;
+			this.modeTime = this.matchtime+this.modeMaxTime;
 		}else if(this.modus != this.modusBoss){
 		}
 		
@@ -458,7 +453,7 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function(){
-		this.game.debug.text(this.game.width, 10, 20);
+		//this.game.debug.text(this.game.width, 10, 20);
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -547,7 +542,7 @@ ProShooter.Game.prototype = {
 		this.platformsize = this.game.rnd.integerInRange(5,10);
 		
 		if(this.lastPlatformY < 150){
-			this.lastPlatformY = 150+this.game.rnd.integerInRange(0,50);
+			this.lastPlatformY = 150+this.game.rnd.integerInRange(-50,50);
 		}
 		if(this.lastPlatformY > this.world.height - 50){
 			this.lastPlatformY = this.world.height-50-this.game.rnd.integerInRange(0,50);
@@ -829,7 +824,7 @@ ProShooter.Game.prototype = {
 	
 	endGame : function(){
 		this.game.score = this.player.score;
-		this.game.playtime = Math.round(this.game.time.now*0.001);
+		this.game.playtime = Math.round(this.matchtime);
 		if(this.game.score > this.game.highscore){
 			this.game.highscore = this.game.score;
 		}

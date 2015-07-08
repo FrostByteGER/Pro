@@ -12,16 +12,6 @@ ProShooter.Preload.prototype = {
  
   preload: function() {
  
-    //show loading screen
- 
-    //this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
- 
-    //this.preloadBar.anchor.setTo(0.5);
- 
-    //this.preloadBar.scale.setTo(3);
- 
-    //this.load.setPreloadSprite(this.preloadBar);
- 
     //load game assets
 	  
 	  
@@ -30,10 +20,8 @@ ProShooter.Preload.prototype = {
 	
 	
     this.load.image('ground','asset/platform.png');
-    //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('map','asset/maps/mainmap.png');
-    //this.load.image('surface', 'asset/maps/mapsurface2.png');
     this.load.image('enemy0', 'asset/enemy.png');
     this.load.image('enemy1', 'asset/enemy1.png');
     this.load.image('enemy2', 'asset/enemy2.png');
@@ -53,10 +41,10 @@ ProShooter.Preload.prototype = {
     this.load.image('boss2', 'asset/boss2.png');
     this.load.image('medikit','asset/firstaid.png');
     this.load.image('gameOver','asset/menu/GameOver.png');
-    this.load.image('score','asset/menu/Score.png');
-    this.load.image('time','asset/menu/Time.png');
-    this.load.image('highscore','asset/menu/Highscore.png');
-    this.load.image('besttime','asset/menu/BestTime.png');
+    this.load.image('playerscore','asset/menu/Score.png');
+    this.load.image('playertime','asset/menu/Time.png');
+    this.load.image('playerhighscore','asset/menu/Highscore.png');
+    this.load.image('playerbesttime','asset/menu/BestTime.png');
     
     this.load.image('retry','asset/menu/btn_retry.png');
     this.load.image('back','asset/menu/btn_back.png');
