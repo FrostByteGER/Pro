@@ -793,6 +793,8 @@ ProShooter.Game.prototype = {
 	},
 	
 	shutdown: function(game) {
+		this.bossmusic1.stop();
+		this.music_heavy.stop();
 		this.music.stop();
 	},
 	
