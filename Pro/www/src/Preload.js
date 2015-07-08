@@ -41,10 +41,10 @@ ProShooter.Preload.prototype = {
     this.load.image('boss2', 'asset/boss2.png');
     this.load.image('medikit','asset/firstaid.png');
     this.load.image('gameOver','asset/menu/GameOver.png');
-    this.load.image('score','asset/menu/Score.png');
-    this.load.image('time','asset/menu/Time.png');
-    this.load.image('highscore','asset/menu/Highscore.png');
-    this.load.image('besttime','asset/menu/BestTime.png');
+    this.load.image('playerscore','asset/menu/Score.png');
+    this.load.image('playertime','asset/menu/Time.png');
+    this.load.image('playerhighscore','asset/menu/Highscore.png');
+    this.load.image('playerbesttime','asset/menu/BestTime.png');
     
     this.load.image('retry','asset/menu/btn_retry.png');
     this.load.image('back','asset/menu/btn_back.png');

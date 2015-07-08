@@ -17,10 +17,10 @@ ProShooter.EndMenu.prototype = {
 		this.end.loop = true;
 	    this.end.play();
 		this.gameOver = this.add.sprite(this.game.width/2 - 360/2, 100, 'gameOver');
-		this.currentScore = this.add.sprite(this.game.width/2 - 319/2 - 75, 200,'score');
-		this.currentTime = this.add.sprite(this.game.width/2 - 319/2 - 75, 250,'time');
-		this.highscore = this.add.sprite(this.game.width/2 - 319/2 - 75, 300,'highscore');
-		this.bestTime = this.add.sprite(this.game.width/2 - 319/2 - 75, 350,'besttime');
+		this.currentScoreDesc = this.add.sprite(this.game.width/2 - 319/2 - 75, 200,'playerscore');
+		this.currentTimeDesc = this.add.sprite(this.game.width/2 - 319/2 - 75, 250,'playertime');
+		this.highscoreDesc = this.add.sprite(this.game.width/2 - 319/2 - 75, 300,'playerhighscore');
+		this.bestTimeDesc = this.add.sprite(this.game.width/2 - 319/2 - 75, 350,'playerbesttime');
 		
 		this.retryButton = this.add.button(this.game.width/2 - 338, 425,'retry', function(){
 			this.end.stop();
@@ -31,10 +31,10 @@ ProShooter.EndMenu.prototype = {
 		this.state.start('MainMenu');
 		}, this, 0, 0, 0);
 		
-		this.scoreText = this.add.bitmapText(this.game.width/2 + 150, 200,'mainfont', this.score, 38);
-		this.highscoreText = this.add.bitmapText(this.game.width/2 + 150, 250,'mainfont', this.highscore, 38);
-		this.timeText = this.add.bitmapText(this.game.width/2 + 150, 300,'mainfont', this.playtime, 38);
-		this.besttimeText = this.add.bitmapText(this.game.width/2 + 150, 350,'mainfont', this.besttime, 38);
+		this.scoreText = this.add.bitmapText(this.game.width/2 + 150, 200,'mainfont', '', 38);
+		this.timeText = this.add.bitmapText(this.game.width/2 + 150, 250,'mainfont', '', 38);
+		this.highscoreText = this.add.bitmapText(this.game.width/2 + 150, 300,'mainfont', '', 38);
+		this.besttimeText = this.add.bitmapText(this.game.width/2 + 150, 350,'mainfont', '', 38);
   },
 
   update : function(){
