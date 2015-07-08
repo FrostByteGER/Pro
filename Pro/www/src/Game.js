@@ -251,6 +251,9 @@ ProShooter.Game.prototype = {
 				enemy.direction = 'right';
 				enemy.scale.x *= -1;
 			}
+			if(enemy.name == 'enemy0'){
+				enemy.animations.play('walk');
+			}
 		}
 			
 		/*for(var i = 0; i < this.mobs.length; i++){
@@ -697,10 +700,13 @@ ProShooter.Game.prototype = {
 	
 	spawnMob : function(position, sprite, damage, health, range, sfx, deathsfx, points,speed, bulletInterval) {
 		var mob = this.mobs.create(position.x, position.y, sprite);
+		if(sprite == 'enemy0'){
+			mob.animations.add('walk', [0, 1], 10, true);
+		}
 		mob.damage = damage;
 		mob.health = health;
 		mob.range = range;
-		mob.name = name;
+		mob.name = sprite;
 		mob.body.gravity.y = 1000;
 		if(this.game.rnd.integerInRange(0,100) > 50){
 			mob.direction = 'right';

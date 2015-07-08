@@ -17,6 +17,8 @@ ProShooter.MainMenu.prototype = {
 		this.main.loop = true;
 	    this.main.play();
 		this.mainmenuHeader = this.game.add.sprite(this.game.width/2 - 279/2, 100, 'header');
+		this.controls = this.game.add.sprite(this.game.width/2 - 148, 325, 'controls');
+		this.credits = this.game.add.sprite(this.game.width - 320, 480, 'about');
 		this.startButton = this.add.button(this.game.width/2 - 338/2, 250,'play', this.startGame, this, 0, 0, 0);
   },
   
