@@ -36,8 +36,10 @@ ProShooter.Game.prototype = {
 		this.modusRush = 1;
 		this.modusBoss = 2;
 		this.modusChalange = 3;
-		
-		this.enemyamount = 20; 
+		this.modeTime = this.time.now;
+		this.modeMaxTime = 60*1000;
+		this.modes = 3;
+		this.enemyamount = 85;
 		
 		// redWall
 		this.redWallSpeed = 2;
@@ -137,25 +139,22 @@ ProShooter.Game.prototype = {
 		// bosse
 		
 		this.bosse = this.add.group();
+		this.bosse.enableBody = true;
+		this.bosse.physicsBodyType = Phaser.Physics.ARCADE;
 		
-		temp = {};
+		/*temp = {};
 		temp.x = this.player.x;
 		temp.y = this.player.y;
 		
 		this.spwanBoss(temp);
-		
+		*/
 		// pickups
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
 		this.pickups.physicsBodyType = Phaser.Physics.ARCADE;
 		this.pickups.createMultiple(10, 'star');
 		this.pickups.setAll('outOfBoundsKill', true);
-		this.pickups.setAll('checkWorldBounds', true);
-		
-
-		
-	    //music.play();
-		
+		this.pickups.setAll('checkWorldBounds', true);		
 	},
 
 	update : function() {
@@ -163,6 +162,7 @@ ProShooter.Game.prototype = {
 		this.physics.arcade.overlap(this.bullets, this.platforms, this.collectBullet, null, this);
 		this.physics.arcade.overlap(this.player, this.mobs, this.damagePlayer, null, this);
 		this.physics.arcade.overlap(this.mobs, this.bullets, this.hitMob, null, this);
+		this.physics.arcade.overlap(this.bosse, this.bullets, this.hitBoss, null, this);
 		this.physics.arcade.overlap(this.pickups, this.player, this.pickpuSomething, null, this);
 		this.physics.arcade.overlap(this.player, this.enemybullets, this.damagePlayer, null, this);
 		this.physics.arcade.overlap(this.enemybullets, this.platforms, this.collectBullet, null, this);
@@ -200,7 +200,6 @@ ProShooter.Game.prototype = {
 
 			}
 		}
-
 
 		// Reset the players velocity (movement)
 		this.player.body.velocity.x = 0;		
@@ -317,10 +316,10 @@ ProShooter.Game.prototype = {
 			var boss = this.bosse.getAt(i);
 			boss.x = this.game.camera.x;
 			
-			if(boss.x < this.player.x-500){
-				boss.x -= (this.player.x-500)/boss.x/10;
-			}else if(boss.x > this.player.x-500){
-				boss.x += boss.x/(this.player.x-500)/10;
+			if(boss.x < this.player.x-400){
+				boss.x = this.player.x-400;
+			}else if(boss.x > this.player.x-400){
+				boss.x = (this.player.x-400);
 			}
 			
 			if(boss.y < this.player.y){
@@ -342,6 +341,13 @@ ProShooter.Game.prototype = {
 		
 		this.redWallX += this.redWallSpeed;
 		
+		if(this.time.now-this.modeTime >= this.modeMaxTime && this.modus != this.modusBoss){
+			
+			this.changeMode(this.game.rnd.integerInRange(0,this.modes))
+			this.modeTime = this.time.now;
+		}else if(this.modus != this.modusBoss){
+		}
+		
 	},
 
 	render : function(){
@@ -358,7 +364,7 @@ ProShooter.Game.prototype = {
 		this.game.debug.text("Player X: " + this.player.x + 25
 				+ "   Player Y: " + this.player.y + 25 || '--', 20, 200,
 				"#00ff00", "20px Courier");
-		this.game.debug.text(this.boundsXmax+" "+this.boundsXmin || '--', 20, 230,
+		this.game.debug.text(this.modus+" "+this.bosse.length || '--', 20, 230,
 				"#00ff00", "20px Courier");
 	},
 
@@ -447,7 +453,7 @@ ProShooter.Game.prototype = {
 			this.lastPlatformY = this.world.height-50-this.game.rnd.integerInRange(0,50);
 		}
 		
-		if(this.game.rnd.integerInRange(0,100) > 85){
+		if(this.game.rnd.integerInRange(0,100) > this.enemyamount){
 			
 			this.platformsize += 10;
 			
@@ -583,5 +589,51 @@ ProShooter.Game.prototype = {
 		boss.bulletspershoot = 5;
 		boss.anchor.setTo(.5, 0.8);
 		boss.spawnposition = position;
+		boss.sfx = this.damagesfx;
+	},
+	
+	hitBoss : function(boss, source){
+		this.collectBullet(source);
+		if(boss.health > 0){
+			boss.health -= 10;
+			boss.sfx.play();
+			if(boss.health <= 0){
+				boss.alive = false;
+				boss.kill();
+				this.bosse.remove(boss);
+				this.modus = 0;
+			}
+		}else {
+			boss.kill();
+			this.boss.remove(boss);
+			this.modus = 0;
+		}
+		
+	},
+	
+	changeMode : function(to){
+		
+		if(this.modus != to){
+			
+			if(to == this.modusRush){
+				this.enemyamount = 95;
+				this.redWallSpeed = 4;
+				this.modus = to;
+			}else if(to == this.modusChalange){
+				this.enemyamount = 70;
+				this.redWallSpeed = 2;
+				this.modus = to;
+			}else if(to == this.modusBoss){
+				this.enemyamount = 90;
+				this.redWallSpeed = 2;	
+				temp = {};
+				temp.x = this.player.x-400;
+				temp.y = this.player.y;
+				this.modus = to;
+				this.spwanBoss(temp);
+			}else{
+				
+			}
+		}	
 	}
 };
