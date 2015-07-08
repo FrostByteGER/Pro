@@ -325,6 +325,12 @@ ProShooter.Game.prototype = {
 			var tile = this.platforms.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				//this.platforms.remove(tile);
+				//tile.kill;
+				tile.body.velocity.y += 1;
+				tile.body.rotation +=10;
+			}
+			if(tile.y < 0){
 				this.platforms.remove(tile);
 				tile.kill;
 			}
@@ -334,6 +340,12 @@ ProShooter.Game.prototype = {
 			var tile = this.obstacles.children[i];
 			
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
+				//this.obstacles.remove(tile);
+				//tile.kill;
+				tile.body.velocity.y += 1;
+				tile.body.rotation +=10;
+			}
+			if(tile.y < 0){
 				this.obstacles.remove(tile);
 				tile.kill;
 			}
