@@ -31,7 +31,7 @@ ProShooter.Game.prototype = {
 	create : function() {
 		
 		// Modus
-		this.modus = 2;
+		this.modus = 0;
 		
 		this.modusRush = 1;
 		this.modusBoss = 2;
@@ -145,13 +145,13 @@ ProShooter.Game.prototype = {
 		this.bosse = this.add.group();
 		this.bosse.enableBody = true;
 		this.bosse.physicsBodyType = Phaser.Physics.ARCADE;
-		
+		/*
 		temp = {};
 		temp.x = this.player.x;
 		temp.y = this.player.y;
 		
 		this.spwanBoss(temp);
-		
+		*/
 		// pickups
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
@@ -251,7 +251,7 @@ ProShooter.Game.prototype = {
 			this.player.body.velocity.y = this.player.speedy;
 
 		}
-		
+		/*
 		if(this.cursors.up.isDown){
 			this.playerShootAngleY = -1;
 		}else if(this.cursors.down.isDown){
@@ -259,7 +259,7 @@ ProShooter.Game.prototype = {
 		}else{
 			this.playerShootAngleY = 0;
 		}
-		
+		*/
 		if(this.cursors.left.isDown){
 			this.playerShootAngleX = -1;
 		}else if(this.cursors.right.isDown){
