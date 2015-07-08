@@ -70,11 +70,11 @@ ProShooter.Game.prototype = {
 		this.player.sfx = this.damagesfx;
 		this.player.deathsfx = this.damagesfx;
 		this.player.body.collideWorldBounds = true;
-		this.player.animations.add('left', [ 16, 17, 18, 19, 20, 21, 22, 23 ],
+		this.player.animations.add('walk_normal', [0, 1, 2, 3, 4, 5, 6, 7, 8],
 				10, true);
-		this.player.animations.add('right', [ 8, 9, 10, 11, 12, 13, 14, 15 ],
-				10, true);
-		this.player.animations.add('jump', [ 4, 6 ], 10, true);
+		this.player.animations.add('walk_northwest', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
+		this.player.animations.add('walk_southwest', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+		this.player.anchor.setTo(.5, 0);
 		// Change to constant camera speed
 		this.game.camera.follow(this.player);
 
@@ -224,15 +224,17 @@ ProShooter.Game.prototype = {
 		if (this.wasd.left.isDown) {
 			this.player.body.velocity.x = -this.player.speedx;
 			
-			this.player.animations.play('left');
+			this.player.animations.play('walk_normal');
 			this.direction = -1;
+			this.player.scale.x = this.direction;
 			this.playerShootAngleX = -1;
 		} else if (this.wasd.right.isDown) {
 			
 			this.player.body.velocity.x = this.player.speedx;
 
-			this.player.animations.play('right');
+			this.player.animations.play('walk_normal');
 			this.direction = 1;
+			this.player.scale.x = this.direction;
 			this.playerShootAngleX = 1;
 		} else if (this.player.body.velocity.x == 0
 				|| this.player.body.velocity.y == 0
@@ -240,9 +242,11 @@ ProShooter.Game.prototype = {
 			
 			this.player.animations.stop();
 			if (this.direction == -1) {
-				this.player.frame = 1;			
+				this.player.frame = 0;		
+				this.player.scale.x = this.direction;
 			} else if (this.direction == 1) {
 				this.player.frame = 0;
+				this.player.scale.x = this.direction;
 			}
 		}
 		
@@ -462,11 +466,11 @@ ProShooter.Game.prototype = {
 		this.mousy = this.game.input.mousePointer.y;
 
 		if (this.direction == -1) {
-			this.fireBullet(this.player.x + 10, this.player.y + 27,this.player.x + 10 + this.playerShootAngleX,
-					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
+			this.fireBullet(this.player.x - 25, this.player.y + 21,this.player.x - 25 + this.playerShootAngleX,
+					this.player.y + 21 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed, this.lasersfx1, this.player);
 		} else {
-			this.fireBullet(this.player.x + 42, this.player.y + 27, this.player.x + 42 + this.playerShootAngleX,
+			this.fireBullet(this.player.x + 25, this.player.y + 27, this.player.x + 25 + this.playerShootAngleX,
 					this.player.y + 27 + this.playerShootAngleY, this.bullets, this.bulletspred,
 					this.bulletspeed, this.lasersfx1, this.player);
 		}
