@@ -179,6 +179,9 @@ ProShooter.Game.prototype = {
 	    //music.play();
 		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 38);
 		this.uiText.fixedToCamera = true;
+		
+		this.debug = 0;
+		
 	},
 
 	update : function() {
@@ -229,10 +232,26 @@ ProShooter.Game.prototype = {
 				if (enemy.fireCooldown > 0) {
 					enemy.fireCooldown--;
 				}
-				
-
+			}
+			if(enemy.direction == 'right' && enemy.x <= enemy.range + enemy.spawnposition.x){
+				enemy.x += enemy.speed;
+			}else if(enemy.direction == 'right'){
+				enemy.direction = 'left';
+				enemy.scale.x *= -1;
+			}
+			
+			if(enemy.direction == 'left' && enemy.x >= enemy.spawnposition.x - enemy.range){
+				enemy.x -= enemy.speed;
+			}else if(enemy.direction == 'left'){
+				enemy.direction = 'right';
+				enemy.scale.x *= -1;
 			}
 		}
+		
+		/*for(var i = 0; i < this.mobs.length; i++){
+			var mob = this.mobs.getAt(i);
+
+		}*/
 		
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
@@ -316,23 +335,6 @@ ProShooter.Game.prototype = {
 		if (this.shootcooldown > 0) {
 			this.shootcooldown--;
 		}
-		
-		for(var i = 0; i < this.mobs.length; i++){
-			var mob = this.mobs.getAt(i);
-			if(mob.direction == 'right' && mob.x <= mob.range + mob.spawnposition.x){
-				mob.x += mob.speed;
-			}else if(mob.direction == 'right'){
-				mob.direction = 'left';
-				mob.scale.x *= -1;
-			}
-			
-			if(mob.direction == 'left' && mob.x >= mob.spawnposition.x - mob.range){
-				mob.x -= mob.speed;
-			}else if(mob.direction == 'left'){
-				mob.direction = 'right';
-				mob.scale.x *= -1;
-			}
-		}
 	
 		if(this.lastPlatformX-2000 < this.game.camera.x){
 			this.addRandomPlatform();
@@ -361,9 +363,15 @@ ProShooter.Game.prototype = {
 				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
-			if(tile.y < 0){
+			
+			if(this.debug == 0){
+				this.debug = tile;
+			}
+			
+			if(tile.y > this.world.height){
 				this.platforms.remove(tile);
-				tile.kill;
+				tile.kill();
+				tile.destroy();
 			}
 		}
 		
@@ -376,9 +384,10 @@ ProShooter.Game.prototype = {
 				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
-			if(tile.y < 0){
+			if(tile.y > this.world.height){
 				this.obstacles.remove(tile);
-				tile.kill;
+				tile.kill();
+				tile.destroy();
 			}
 		}
 		
@@ -406,7 +415,6 @@ ProShooter.Game.prototype = {
 			}else{
 				boss.cooldown--;
 			}
-			
 		}
 		
 		this.redWallX += this.redWallSpeed;
@@ -438,7 +446,7 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function(){
-
+		this.game.debug.text(this.world.height+" "+this.platforms.length+" "+this.obstacles.length+" "+this.debug+"y"+this.debug.y+"x"+this.debug.x+" "+this.player.x, 10, 20);
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
