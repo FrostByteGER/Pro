@@ -166,7 +166,6 @@ ProShooter.Game.prototype = {
 	    //music.play();
 		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 48);
 		this.uiText.fixedToCamera = true;
-		this.changeMode(1);
 	},
 
 	update : function() {
