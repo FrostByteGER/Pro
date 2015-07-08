@@ -26,6 +26,9 @@ ProShooter.Preload.prototype = {
 	  
 	  
 	this.load.image('header','asset/menu/header.png');  
+	this.load.image('play', 'asset/menu/btn_play.png');
+	
+	
     this.load.image('ground','asset/platform.png');
     //this.load.image('star','asset/star.png');
     this.load.image('bullet','asset/bullet.png');
