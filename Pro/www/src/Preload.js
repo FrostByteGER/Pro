@@ -11,15 +11,18 @@ ProShooter.Preload = function(){};
 ProShooter.Preload.prototype = {
  
   preload: function() {
+	this.loadingscreen = this.game.add.sprite(this.game.width/2 - 278, this.game.height/2 - 14.5, 'loading');
+    this.load.setPreloadSprite(this.loadingscreen);
+	 
+
 	this.load.image('header','asset/menu/header.png');  
 	this.load.image('play', 'asset/menu/btn_play.png');
-	
+	this.load.image('background', 'asset/maps/mapbackground1.png');
 	this.load.image('controls','asset/menu/Controls.png');
 	this.load.image('about','asset/menu/Credits.png');
     this.load.image('bullet','asset/bullet.png');
     this.load.image('enemy1', 'asset/enemy1.png');
     this.load.image('enemy2', 'asset/enemy2.png');
-    this.load.image('background', 'asset/maps/mapbackground1.png');
     this.load.image('plat', 'asset/plat.png');
     this.load.image('plat_start', 'asset/plat_start.png');
     this.load.image('plat_mit', 'asset/plat_mit.png');

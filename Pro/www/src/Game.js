@@ -745,12 +745,14 @@ ProShooter.Game.prototype = {
 			boss.sfx.play();
 			if(boss.health <= 0){
 				boss.alive = false;
+				this.player.score += boss.points;
 				boss.kill();
 				this.bosse.remove(boss);
 				this.modus = 0;
 			}
 		}else {
 			boss.kill();
+			this.player.score += boss.points;
 			this.bosse.remove(boss);
 			this.modus = 0;
 		}
