@@ -452,7 +452,7 @@ ProShooter.Game.prototype = {
 	},
 
 	render : function(){
-		this.game.debug.text(this.world.height+" "+this.platforms.length+" "+this.obstacles.length+" "+this.debug+"y"+this.debug.y+"x"+this.debug.x+" "+this.player.x, 10, 20);
+		this.game.debug.text(this.game.width, 10, 20);
 	},
 
 	fireBullet : function(scrIntx, scrInty, endIntx, endInty, bulletGroup,
@@ -826,6 +826,9 @@ ProShooter.Game.prototype = {
 		if(this.game.playtime > this.game.besttime){
 			this.game.besttime = this.game.playtime;
 		}
+		
+		this.game.world.setBounds(0, 0, 1600, 600);
+		
 		this.restartGame();
 	},
 	
