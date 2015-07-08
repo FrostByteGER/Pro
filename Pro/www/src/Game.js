@@ -90,6 +90,8 @@ ProShooter.Game.prototype = {
 		this.platforms = this.add.group();
 		this.platforms.enableBody = true;
 		this.platformsize = 4;
+		this.platformSizeMax = 9;
+		this.platformSizeMin = 6;
 		
 		this.lastPlatformY = this.world.height - 48;
 		this.lastPlatformX = 5*16;
@@ -537,9 +539,9 @@ ProShooter.Game.prototype = {
 		
 		this.lastPlatformX = this.lastPlatformX+(this.platformsize+1)*(16)+inx;
 		
-		this.lastPlatformY = this.lastPlatformY+(this.game.rnd.integerInRange(-50,0)*(2-(this.game.rnd.integerInRange(1,200)/200)));
+		this.lastPlatformY = this.lastPlatformY+(this.game.rnd.integerInRange(-50,50)*(2-(this.game.rnd.integerInRange(1,200)/200)));
 		
-		this.platformsize = this.game.rnd.integerInRange(5,10);
+		this.platformsize = this.game.rnd.integerInRange(3,5);
 		
 		if(this.lastPlatformY < 150){
 			this.lastPlatformY = 150+this.game.rnd.integerInRange(-50,50);
@@ -550,7 +552,7 @@ ProShooter.Game.prototype = {
 		
 		if(this.game.rnd.integerInRange(0,100) > this.enemyamount){
 			
-			this.platformsize += 4;
+			this.platformsize += 8;
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
@@ -572,7 +574,7 @@ ProShooter.Game.prototype = {
 			this.spawnPickup(temp);
 		}else if(this.game.rnd.integerInRange(0,100) > this.obstacleamount ){
 			
-			this.platformsize += 10;
+			this.platformsize += 4;
 			
 			for(var i = 3 ; i <  this.platformsize-3 ; i++){
 				if(this.game.rnd.integerInRange(0,100) > 80){
@@ -788,6 +790,8 @@ ProShooter.Game.prototype = {
 				this.music_heavy.play();
 				this.bossmusic1.stop();
 				this.music.stop();
+				this.platformSizeMax = 7;
+				this.platformSizeMin = 4;
 			}else if(to == this.modusChalange){
 				this.enemyamount = 60;
 				this.redWallSpeed = 2;
@@ -796,7 +800,11 @@ ProShooter.Game.prototype = {
 				this.music_heavy.play();
 				this.bossmusic1.stop();
 				this.music.stop();
+				this.platformSizeMax = 9;
+				this.platformSizeMin = 6;
 			}else if(to == this.modusBoss){
+				this.platformSizeMax = 10;
+				this.platformSizeMin = 8;
 				this.enemyamount = 90;
 				this.redWallSpeed = 1;	
 				temp = {};
