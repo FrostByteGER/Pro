@@ -350,6 +350,8 @@ ProShooter.Game.prototype = {
 			
 			if(boss.cooldown == 0){
 				for(var i = 0 ;i < boss.bulletspershoot ; i++){
+					boss.bulletOffsetX = 0;
+					boss.bulletOffsetY = 0;
 					this.fireBullet(boss.x, boss.y, this.player.x, this.player.y, this.enemybullets, boss.bulletSpread, boss.bulletSpeed, this.lasersfx2);
 				}
 				boss.cooldown = boss.maxcooldown;
@@ -616,6 +618,8 @@ ProShooter.Game.prototype = {
 			boss.health = 1500;
 			boss.name = name;
 			boss.bulletSpeed = 600;
+			boss.bulletOffsetX = 0;
+			boss.bulletOffsetY = 0;
 			boss.maxcooldown = 200;
 			boss.cooldown = boss.maxcooldown;
 			boss.bulletSpread = 5;
@@ -629,6 +633,8 @@ ProShooter.Game.prototype = {
 			boss.name = name;
 			boss.bulletSpeed = 600;
 			boss.maxcooldown = 350;
+			boss.bulletOffsetX = 0;
+			boss.bulletOffsetY = -100;
 			boss.cooldown = boss.maxcooldown;
 			boss.bulletSpread = 6;
 			boss.bulletspershoot = 6;
