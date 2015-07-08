@@ -152,6 +152,9 @@ ProShooter.Game.prototype = {
 		
 		this.spwanBoss(temp);
 		*/
+		
+		
+		
 		// pickups
 		this.pickups = this.game.add.group();
 		this.pickups.enableBody = true;
@@ -163,7 +166,7 @@ ProShooter.Game.prototype = {
 	    //music.play();
 		this.uiText = this.game.add.bitmapText(50, 50,'mainfont', '', 48);
 		this.uiText.fixedToCamera = true;
-		
+		this.changeMode(1);
 	},
 
 	update : function() {
@@ -331,7 +334,7 @@ ProShooter.Game.prototype = {
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
 				//this.platforms.remove(tile);
 				//tile.kill;
-				tile.body.velocity.y += 1;
+				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
 			if(tile.y < 0){
@@ -346,7 +349,7 @@ ProShooter.Game.prototype = {
 			if(tile.x < this.boundsXmin || tile.x < this.redWallX){					
 				//this.obstacles.remove(tile);
 				//tile.kill;
-				tile.body.velocity.y += 1;
+				tile.body.velocity.y += this.redWallSpeed;
 				tile.body.rotation +=10;
 			}
 			if(tile.y < 0){
@@ -417,7 +420,7 @@ ProShooter.Game.prototype = {
 		}
 		this.game.debug.text(this.bullets.getAt(0).x + ' ' + this.game.camera.x + this.game.camera.width, 20, 120, "#00ff00", "40px Courier");
 		this.game.debug.cameraInfo(this.game.camera, 550, 32);
-		this.game.debug.text("FPS: " + this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
+		this.game.debug.text("FPS: " + this.game.time.fps+" "+this.redWallSpeed || '--', 20, 70, "#00ff00", "40px Courier");
 		
 		//this.game.debug.text("Mouse X: " + this.game.input.mousePointer.x + "   Mouse Y: " + this.game.input.mousePointer.y || '--', 20, 140, "#00ff00", "20px Courier");
 		//this.game.debug.text("Player X: " + this.player.x + 25 + "   Player Y: " + this.player.y + 25 || '--', 20, 200, "#00ff00", "20px Courier");
@@ -667,7 +670,7 @@ ProShooter.Game.prototype = {
 	spwanBoss : function(position){
 		if(this.game.rnd.integerInRange(0,100) > 50){
 			var boss = this.bosse.create(position.x, position.y, 'boss1');	
-			boss.health = 700;
+			boss.health = 600;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.bulletOffsetX = 0;
@@ -682,12 +685,12 @@ ProShooter.Game.prototype = {
 			boss.sfx = this.damagesfx;
 		}else{
 			var boss = this.bosse.create(position.x, position.y, 'boss2');	
-			boss.health = 1000;
+			boss.health = 800;
 			boss.name = name;
 			boss.bulletSpeed = 500;
 			boss.maxcooldown = 300;
-			boss.bulletOffsetX = 60;
-			boss.bulletOffsetY = -255;
+			boss.bulletOffsetX = 70;
+			boss.bulletOffsetY = -110;
 			boss.damage = 25;
 			boss.cooldown = boss.maxcooldown;
 			boss.bulletSpread = 8;
