@@ -45,7 +45,7 @@ ProShooter.Game.prototype = {
 		this.modeTime = this.time.now;
 		this.modeMaxTime = 30*1000;
 		this.modes = 3;
-		this.enemyamount = 30;
+		this.enemyamount = 80;
 		
 		// redWall
 		this.redWallSpeed = 2;
@@ -237,7 +237,7 @@ ProShooter.Game.prototype = {
 		if(this.heal.heal.isDown){
 			if(this.player.health < 100 && this.player.medikits > 0){
 				this.player.health += this.medikits.health;
-				this.heal.play();
+				//this.heal.play();
 			}
 		}
 
@@ -286,6 +286,11 @@ ProShooter.Game.prototype = {
 			this.playerShootAngleY = 0;
 		}
 		*/
+		if(this.player.y >= this.world.height - 51){
+			this.player.kill();
+			this.restartGame();
+		}
+		
 		if(this.cursors.left.isDown){
 			this.playerShootAngleX = -1;
 		}else if(this.cursors.right.isDown){
@@ -530,7 +535,7 @@ ProShooter.Game.prototype = {
 		
 		if(this.game.rnd.integerInRange(0,100) > this.enemyamount){
 			
-			this.platformsize += 10;
+			this.platformsize += 4;
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
@@ -543,7 +548,7 @@ ProShooter.Game.prototype = {
 				this.spawnMob(temp, 'enemy2', 30, 55, ((this.platformsize+1)*8)-50,this.damagesfx,this.damagesfx, 50 ,1, 50);
 			}
 			// function(position, sprite, damage, health, range, sfx, deathsfx, points)
-		}else if(this.game.rnd.integerInRange(0,100) > 95){
+		}else if(this.game.rnd.integerInRange(0,100) > 0){
 			
 			temp = {};
 			temp.x = this.lastPlatformX+((this.platformsize+1)*8);
@@ -577,25 +582,27 @@ ProShooter.Game.prototype = {
 	},
 	
 	spawnPickup : function(position){
-		if(this.game.rnd.integerInRange(0,3) == 0){
+		
+		if(this.game.rnd.integerInRange(0,3) == 5){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup0');
 			pickup.name = 'pickup0';
-		}else if(this.game.rnd.integerInRange(0,3) == 0){
+		}else if(this.game.rnd.integerInRange(0,3) == 5){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup1');
 			pickup.name = 'pickup1';
-		}else if(this.game.rnd.integerInRange(0,3) == 0){
+		}else if(this.game.rnd.integerInRange(0,3) == 5){
 			var pickup = this.pickups.create(position.x, position.y, 'pickup2');
 			pickup.name = 'pickup2';
-		}else if(this.game.rnd.integerInRange(0,3) == 0){
-			var pickup = this.medikits.create(position.x, position.y, 'medikit');
+		}else{
+			var pickup = this.pickups.create(position.x, position.y, 'medikit');
 			pickup.name = 'medikit';
 			pickup.health = 50;
-			pickup.body.immovable = true;
+			//pickup.body.immovable = true;
 		}
 
 		pickup.body.gravity.y = 1000;
 		pickup.spawnposition = position;
 		pickup.anchor.setTo(.5, 1);
+		
 	},
 	
 	pickpuSomething : function(player, source){
@@ -636,6 +643,7 @@ ProShooter.Game.prototype = {
 			if(player.health <= 0){
 				player.kill();
 				player.deathsfx.play();
+				this.restartGame();
 			}
 		}else{
 			player.kill();
@@ -748,7 +756,7 @@ ProShooter.Game.prototype = {
 		if(this.modus != to){
 			
 			if(to == this.modusRush){
-				this.enemyamount = 40;
+				this.enemyamount = 80;
 				this.redWallSpeed = 4;
 				this.modus = to;
 				this.obstacleamount = 60;
